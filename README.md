@@ -7,8 +7,8 @@ Static hosting for blog visualizations. Deployed to GitHub Pages for stable URLs
 ```
 demos/
 ├── gspo/           # GSPO explainer visualization
-│   ├── embed.html  # Embeddable content for Webflow
-│   ├── index.html  # Standalone preview
+│   ├── embed.html  # HTML fragment for Webflow embedding
+│   ├── index.html  # Standalone preview (full page)
 │   └── assets/     # JS, CSS, fonts
 └── <future>/       # Additional demos
 ```
@@ -30,9 +30,9 @@ Copy built demo files from blog-components:
 cp -r ~/blog-components/demos/<name>/dist demos/<name>
 ```
 
-### Embedding in Webflow
+### URLs
 
-Use the GitHub Pages URL:
-```
-https://<user>.github.io/blog-assets/gspo/embed.html
-```
+- **Standalone preview**: https://adaptive-ml.github.io/blog-assets/demos/gspo/
+- **Embed fragment**: https://adaptive-ml.github.io/blog-assets/demos/gspo/embed.html
+
+Note: `embed.html` is an HTML fragment (no `<html>`/`<body>` tags) designed to be injected into Webflow. View `index.html` for a styled standalone preview.
