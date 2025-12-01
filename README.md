@@ -30,9 +30,19 @@ Copy built demo files from blog-components:
 cp -r ~/blog-components/demos/<name>/dist demos/<name>
 ```
 
+### Generate Inline Embed for Webflow
+
+After copying a demo, generate the inline embed with absolute URLs:
+
+```bash
+bun run inline gspo
+```
+
+This creates `demos/gspo/inline.html` with absolute URLs ready to paste into Webflow.
+
 ### URLs
 
 - **Standalone preview**: https://adaptive-ml.github.io/blog-assets/demos/gspo/
-- **Embed fragment**: https://adaptive-ml.github.io/blog-assets/demos/gspo/embed.html
+- **Inline embed**: https://adaptive-ml.github.io/blog-assets/demos/gspo/inline.html
 
-Note: `embed.html` is an HTML fragment (no `<html>`/`<body>` tags) designed to be injected into Webflow. View `index.html` for a styled standalone preview.
+Copy the contents of `inline.html` into a Webflow HTML Embed element.
