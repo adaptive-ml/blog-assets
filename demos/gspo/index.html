@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSPO Explained</title>
+    <script type="module" crossorigin src="./assets/main-BQj2yeS9.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/stage-animation-DvalZTor.js">
+    <link rel="modulepreload" crossorigin href="./assets/step-content-DanWperp.js">
+    <link rel="stylesheet" crossorigin href="./assets/main-CJE6AFf9.css">
+  </head>
+
+  <body>
+    <div class="blog-container">
+      <h1>A Simple Explanation of GSPO</h1>
+<p>
+  GSPO (Group Sequence Policy Optimization) is a reinforcement learning technique for training language models. Step through the visualization below to see how it works.
+</p>
+
+<div class="visualization-container">
+  <div class="visualization-title">Interactive Explanation</div>
+  <world canvas="#canvas-1" sky="#ffffff">
+    <entity name="controller" sequence-controller></entity>
+    <entity name="stage" stage-animation></entity>
+    <entity name="camera-target" transform="pos: -50 0 0"></entity>
+    <entity name="text-gen" text-generation></entity>
+    <orbit-camera
+      name="camera"
+      target="camera-target"
+      current-distance="15"
+      target-distance="15"
+      current-yaw="0.6"
+      target-yaw="0.6"
+      current-pitch="0.5"
+      target-pitch="0.5"
+      min-pitch="-1.57"
+      offset-y="0"
+      zoom-sensitivity="0"
+      main-camera="projection: orthographic; ortho-size: 20"
+    ></orbit-camera>
+    <entity ambient-light="intensity: 0.6"></entity>
+    <entity directional-light="intensity: 0.7; direction: -1 2 1"></entity>
+
+    <entity name="llm" transform neural-network="connections: 0"></entity>
+    <entity name="shake-driver" transform="pos: -20 0 0" scale-shaker-driver="radius: 10; amplitude: 0"></entity>
+    <entity name="bounce-driver" transform="pos: 0 0 0" position-shaker-driver="radius: 8; amplitude: 0; offset-y: 1"></entity>
+    <entity name="text-output" transform text-output-manager></entity>
+    <entity name="text-input" transform text-input-manager></entity>
+    <entity name="multiple-outputs" transform multiple-outputs-manager></entity>
+  </world>
+  <canvas id="canvas-1" class="game-canvas"></canvas>
+  <div class="step-navigator">
+    <div class="step-controls">
+      <button id="btn-prev" class="step-btn" aria-label="Previous step">&larr;</button>
+      <button id="btn-next" class="step-btn" aria-label="Next step">&rarr;</button>
+    </div>
+    <div class="step-info">
+      <div id="step-counter" class="step-counter">Step 1 of 20</div>
+      <div id="step-title" class="step-title">The Language Model</div>
+      <div id="step-description" class="step-description">We begin with a neural network that generates text token by token.</div>
+    </div>
+  </div>
+</div>
+
+<p>For a more detailed explanation, continue reading.</p>
+
+<h2>The Problem</h2>
+<p>
+  Training a language model on open-ended tasks is tricky. There's no single correct answer, but some responses are better than others. Reinforcement learning addresses this by rewarding preferred outputs. Here's how it works with GSPO. First, we generate multiple responses.
+</p>
+
+<div class="visualization-container">
+  <div class="visualization-title">Generating Multiple Outputs</div>
+  <world canvas="#canvas-2" sky="#ffffff">
+    <entity name="controller" sequence-controller></entity>
+    <entity name="stage" stage-animation="cameraX: 0; connections: 1; collapse: 0; textInputT: 0; multipleOutputsT: 0"></entity>
+    <entity name="camera-target" transform="pos: 0 0 0"></entity>
+    <orbit-camera
+      name="camera"
+      target="camera-target"
+      current-distance="15"
+      target-distance="15"
+      current-yaw="0"
+      target-yaw="0"
+      current-pitch="0"
+      target-pitch="0"
+      min-pitch="-1.57"
+      offset-y="0"
+      zoom-sensitivity="0"
+      main-camera="projection: orthographic; ortho-size: 28"
+    ></orbit-camera>
+    <entity ambient-light="intensity: 0.6"></entity>
+    <entity directional-light="intensity: 0.7; direction: -1 2 1"></entity>
+
+    <entity name="llm" transform neural-network="connections: 1"></entity>
+    <entity name="text-input" transform text-input-manager></entity>
+    <entity name="multiple-outputs" transform multiple-outputs-manager></entity>
+  </world>
+  <canvas id="canvas-2" class="game-canvas"></canvas>
+  <div class="toggle-group">
+    <button id="btn-generate-outputs" class="toggle-btn">Generate Outputs</button>
+  </div>
+</div>
+
+<h2>Score and Rank</h2>
+<p>
+  Next, a reward function scores each response. This could be a trained model, a set of rules, or human ratings. Scores are compared to the group average: above-average responses get reinforced, below-average ones get suppressed.
+</p>
+
+<div class="visualization-container">
+  <div class="visualization-title">Scoring Responses</div>
+  <world canvas="#canvas-3" sky="#ffffff">
+    <entity name="controller" sequence-controller></entity>
+    <entity name="stage" stage-animation="cameraX: 21; connections: 1; collapse: 1; multipleOutputsT: 1; scoresT: 0; averageLineT: 0; sortT: 0"></entity>
+    <entity name="camera-target" transform="pos: 21 0 0"></entity>
+    <entity name="shake-driver" transform="pos: 0 0 0" scale-shaker-driver="radius: 10; amplitude: 0"></entity>
+    <orbit-camera
+      name="camera"
+      target="camera-target"
+      current-distance="15"
+      target-distance="15"
+      current-yaw="0.6"
+      target-yaw="0.6"
+      current-pitch="0.5"
+      target-pitch="0.5"
+      min-pitch="-1.57"
+      offset-y="0"
+      zoom-sensitivity="0"
+      main-camera="projection: orthographic; ortho-size: 20"
+    ></orbit-camera>
+    <entity ambient-light="intensity: 0.6"></entity>
+    <entity directional-light="intensity: 0.7; direction: -1 2 1"></entity>
+
+    <entity name="llm" transform neural-network="connections: 1"></entity>
+    <entity name="multiple-outputs" transform multiple-outputs-manager></entity>
+  </world>
+  <canvas id="canvas-3" class="game-canvas"></canvas>
+  <div class="toggle-group">
+    <button id="btn-score-responses" class="toggle-btn">Score Responses</button>
+  </div>
+</div>
+
+<h2>Comparison to GRPO</h2>
+<p>
+  Everything so far is identical to GRPO (Group Relative Policy Optimization). The difference is how we assign credit to individual tokens.
+</p>
+<p>
+  GRPO weights tokens differently, estimating each token's contribution to the reward. GSPO, on the other hand, weights tokens equally, emphasizing the full sequence over individual tokens. This improves training stability and typically yields better results.
+</p>
+
+<div class="visualization-container">
+  <div class="visualization-title">Token Weighting</div>
+  <world canvas="#canvas-4" sky="#ffffff">
+    <entity name="controller" sequence-controller></entity>
+    <entity name="stage" stage-animation="cameraX: 18; connections: 1; collapse: 1; textGenT: 1; tokenScaleT: 1"></entity>
+    <entity name="camera-target" transform="pos: 18 0 0"></entity>
+    <entity name="text-gen" text-generation></entity>
+    <orbit-camera
+      name="camera"
+      target="camera-target"
+      current-distance="15"
+      target-distance="15"
+      current-yaw="0.6"
+      target-yaw="0.6"
+      current-pitch="0.5"
+      target-pitch="0.5"
+      min-pitch="-1.57"
+      offset-y="0"
+      zoom-sensitivity="0"
+      main-camera="projection: orthographic; ortho-size: 15"
+    ></orbit-camera>
+    <entity ambient-light="intensity: 0.6"></entity>
+    <entity directional-light="intensity: 0.7; direction: -1 2 1"></entity>
+
+    <entity name="llm" transform neural-network="connections: 1"></entity>
+    <entity name="text-output" transform text-output-manager></entity>
+  </world>
+  <canvas id="canvas-4" class="game-canvas"></canvas>
+  <div class="slide-toggle">
+    <span id="label-grpo" class="slide-toggle-label active">GRPO</span>
+    <div id="toggle-weighting" class="slide-toggle-track">
+      <div class="slide-toggle-thumb"></div>
+    </div>
+    <span id="label-gspo" class="slide-toggle-label">GSPO</span>
+  </div>
+</div>
+
+<h2>Wrapping Up</h2>
+<p>
+  Thanks for reading! This was a simple overview of how GSPO trains language models through group-based reinforcement learning.
+</p>
+<p>
+  A technical deep dive with implementation details is planned. <a class="ml-onclick-form" href="javascript:void(0)" onclick="ml('show', 'Kponfi', true)">Join our mailing list</a> to be notified when it's published.
+</p>
+
+<!-- MailerLite Universal -->
+<script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '1634287');
+</script>
+<!-- End MailerLite Universal -->
+
+    </div>
+
+  </body>
+</html>

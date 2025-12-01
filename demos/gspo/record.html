@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSPO - Video Recording</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #111;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .canvas-container {
+        position: relative;
+        background: #fff;
+      }
+
+      canvas.game-canvas {
+        display: block;
+        width: 960px;
+        height: 540px;
+        outline: none;
+      }
+
+      .info {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: #888;
+        text-align: center;
+      }
+
+      .info kbd {
+        background: #333;
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/record-Bo47LeCw.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/stage-animation-DvalZTor.js">
+  </head>
+
+  <body>
+    <div class="canvas-container">
+      <world canvas="#canvas-1" sky="#ffffff">
+        <entity name="controller" sequence-controller></entity>
+        <entity name="stage" stage-animation></entity>
+        <entity name="camera-target" transform="pos: -50 0 0"></entity>
+        <entity name="text-gen" text-generation></entity>
+        <orbit-camera
+          name="camera"
+          target="camera-target"
+          current-distance="15"
+          target-distance="15"
+          current-yaw="0.6"
+          target-yaw="0.6"
+          current-pitch="0.5"
+          target-pitch="0.5"
+          min-pitch="-1.57"
+          offset-y="0"
+          zoom-sensitivity="0"
+          main-camera="projection: orthographic; ortho-size: 20"
+        ></orbit-camera>
+        <entity ambient-light="intensity: 0.6"></entity>
+        <entity directional-light="intensity: 0.7; direction: -1 2 1"></entity>
+
+        <entity name="llm" transform neural-network="connections: 0"></entity>
+        <entity name="shake-driver" transform="pos: -20 0 0" scale-shaker-driver="radius: 10; amplitude: 0"></entity>
+        <entity name="bounce-driver" transform="pos: 0 0 0" position-shaker-driver="radius: 8; amplitude: 0; offset-y: 1"></entity>
+        <entity name="text-output" transform text-output-manager></entity>
+        <entity name="text-input" transform text-input-manager></entity>
+        <entity name="multiple-outputs" transform multiple-outputs-manager></entity>
+      </world>
+      <canvas id="canvas-1" class="game-canvas"></canvas>
+    </div>
+
+    <div class="info">
+      Press <kbd>R</kbd> to record the next step transition. Use arrow keys or the overlay to navigate steps.
+    </div>
+
+  </body>
+</html>
