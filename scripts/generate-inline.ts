@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-const BASE_URL = 'https://adaptive-ml.github.io/blog-assets/demos';
+const BASE_URL = 'https://adaptive-ml.github.io/blog-assets';
 
 async function generateInlineEmbed(demoName: string): Promise<void> {
   const demoDir = `demos/${demoName}`;
