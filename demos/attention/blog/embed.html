@@ -1,0 +1,249 @@
+<script type="module" crossorigin src="../assets/plugin-DQL4gMZR.js"></script>
+<script type="module" crossorigin src="../assets/main-C7lVck3B.js"></script>
+<link rel="stylesheet" crossorigin href="../assets/main-QYtKp3mq.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<h1>Attention, Visualized</h1>
+
+<p>Build an intuition for the attention mechanism, the core innovation behind transformers.</p>
+
+<!-- Section 1: The Setup -->
+<section class="attention-section" id="section-setup">
+  <h2>Building blocks</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-setup"></world>
+    <canvas id="canvas-setup" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="setup">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>Language models are trained to predict the most likely next token. Let's say we have a sequence of input tokens: <span class="token-input">"the"</span>, <span class="token-input">"dog"</span>, <span class="token-input">"was"</span>. Each of these tokens is mapped to a unique vector representing its meaning, called a <span class="token-embedding">word embedding</span>. The <span class="token-embedding">embedding</span> of <span class="token-input">"dog"</span> encodes everything the model knows about dogs.</p>
+
+  <p>These <span class="token-embedding">embeddings</span> are fed to a neural network, which predicts the most likely next token—in this case, <span class="token-output">"barking"</span>.</p>
+
+  <p>Simple enough. Now consider: what about a <i>hot dog</i>?</p>
+</section>
+
+<!-- Section 2: The Problem -->
+<section class="attention-section" id="section-problem">
+  <h2>The problem</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-problem"></world>
+    <canvas id="canvas-problem" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="problem">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>We now have a new sequence: <span class="token-input">"the"</span>, <span class="token-input">"hot"</span>, <span class="token-input">"dog"</span>, <span class="token-input">"was"</span>.</p>
+
+  <p>The <span class="token-embedding">embedding</span> of <span class="token-input">"dog"</span> is the same as before, still encoding the meaning of dog. Similarly, <span class="token-input">"hot"</span> gets its own <span class="token-embedding">embedding</span> that encodes information like high temperature.</p>
+
+  <p>Given these embeddings, the model may predict <span class="token-output">"panting"</span>. A reasonable completion for a dog, but it misses the context. In this sentence, we're most likely talking about a <i>hot dog</i>, not a dog that's hot.</p>
+
+  <p>Ideally, the meaning of <span class="token-input">"dog"</span> should be contextual. In this case, the food, not the animal. This is where attention comes in.</p>
+</section>
+
+<!-- Section 3: The Dot Product -->
+<section class="attention-section" id="section-dot-product">
+  <h2>Dot product (recap)</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-dot-product"></world>
+    <canvas id="canvas-dot-product" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="dot-product">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>Before we get into attention, let's recap the <b>dot product</b>.</p>
+    
+  <p>Given two vectors <span class="concept-query">a</span> and <span class="concept-key">b</span>, each with <i>d</i> components, the dot product tells us how similar they are. To compute it, we multiply corresponding components and add up the results:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">{\color{query}a_1} {\color{key}b_1} + {\color{query}a_2} {\color{key}b_2} + \cdots + {\color{query}a_d} {\color{key}b_d}</span>
+  </div>
+
+  <p>This can also be written compactly as <span class="concept-query">a</span><sup>T</sup><span class="concept-key">b</span>:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">{\color{query}a}^\top {\color{key}b}</span>
+  </div>
+
+  <p>Similar vectors produce large dot products; opposite vectors produce negative ones. As the dimension <i>d</i> grows, these values tend to get larger, so we divide by <span class="katex-inline">\sqrt{d}</span> to keep them in a reasonable range:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">\frac{{\color{query}a}^\top {\color{key}b}}{\sqrt{d}}</span>
+  </div>
+
+  <p>This scaled dot product is exactly what's used in our attention mechanism.</p>
+</section>
+
+<!-- Section 4: Query and Key -->
+<section class="attention-section" id="section-query-key">
+  <h2>Attention scores</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-query-key"></world>
+    <canvas id="canvas-query-key" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="query-key">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>We use the dot product to measure how much each token should attend to the others. For "dog", we compute:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">{\color{query}q_3}{\color{key}K}^\top</span>
+  </div>
+
+  <p>From "dog"'s embedding, we project a <span class="concept-query">query vector</span> <span class="katex-inline">{\color{query}q_3}</span>—think of this as asking: <i>"what am I looking for?"</i></p>
+
+  <p>From each other token, we project a <span class="concept-key">key vector</span>. For example, "hot" produces <span class="katex-inline">{\color{key}k_2}</span>, representing: <i>"here's what I provide."</i></p>
+
+  <p>The dot product between query and key gives us an <span class="concept-attention">attention score</span>—a single number measuring how relevant that token is to "dog".</p>
+</section>
+
+<!-- Section 5: Softmax and Scaling -->
+<section class="attention-section" id="section-attention-weights">
+  <h2>Normalizing with softmax</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-attention-weights"></world>
+    <canvas id="canvas-attention-weights" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="attention-weights">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>The <span class="concept-attention">attention scores</span> tell us how relevant each token is to <span class="token-input">"dog"</span>. But these raw numbers can be any magnitude. To turn them into something meaningful, we apply two operations.</p>
+
+  <p>First, we scale by <span class="katex-inline">\sqrt{d}</span> as we saw earlier. Then, <b>softmax</b> converts the scores into <span class="concept-attention">attention weights</span>—values between 0 and 1 that sum to 1:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">\text{softmax}\left(\frac{{\color{query}q_3}{\color{key}K}^\top}{\sqrt{d}}\right)</span>
+  </div>
+
+  <p>These weights are a probability distribution over tokens. They tell us exactly how much <span class="token-input">"dog"</span> should attend to each token in the sequence.</p>
+</section>
+
+<!-- Section 6: Value Vectors -->
+<section class="attention-section" id="section-value-output">
+  <h2>Capturing context</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-value-output"></world>
+    <canvas id="canvas-value-output" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="value-output">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>Each token also produces a <span class="concept-value">value vector</span>. While the <span class="concept-key">key</span> says <i>"here's what I offer"</i>, the <span class="concept-value">value</span> contains the actual content to share.</p>
+
+  <p>We multiply our <span class="concept-attention">attention weights</span> by <span class="concept-value">V</span> to get a weighted sum of meaning from every token:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">\text{softmax}\left(\frac{{\color{query}q_3}{\color{key}K}^\top}{\sqrt{d}}\right){\color{value}V}</span>
+  </div>
+
+  <p>The output is a new vector for <span class="token-input">"dog"</span> that understands it likely refers to the food, not the animal.</p>
+</section>
+
+<!-- Section 7: Full Formula -->
+<section class="attention-section" id="section-full-attention">
+  <h2>Putting it all together</h2>
+
+  <div class="visualization-container">
+    <world canvas="#canvas-full-attention"></world>
+    <canvas id="canvas-full-attention" class="game-canvas"></canvas>
+    <div class="step-navigator" data-canvas="full-attention">
+      <div class="step-controls">
+        <button class="step-btn btn-prev" aria-label="Previous step">&larr;</button>
+        <button class="step-btn btn-next" aria-label="Next step">&rarr;</button>
+      </div>
+      <div class="step-info">
+        <div class="step-counter"></div>
+        <div class="step-title"></div>
+        <div class="step-description"></div>
+      </div>
+    </div>
+  </div>
+
+  <p>So far, we've focused on a single token. But in practice, every token computes its own <span class="concept-query">query</span> and attends to the full sequence—all in parallel. This is <b>self-attention</b>:</p>
+
+  <div class="formula-block">
+    <span class="katex-display">\text{Attention}({\color{query}Q}, {\color{key}K}, {\color{value}V}) = \text{softmax}\left(\frac{{\color{query}Q}{\color{key}K}^\top}{\sqrt{d}}\right){\color{value}V}</span>
+  </div>
+
+  <p>Each token projects a <span class="concept-query">query</span> (what it's looking for) and a <span class="concept-key">key</span> (what it offers). The dot product between them produces <span class="concept-attention">attention scores</span>, which softmax normalizes into weights. These weights then combine the <span class="concept-value">value</span> vectors—the actual content each token contributes—into a single, context-aware representation.</p>
+
+  <p>That's attention: a learned way for tokens to share information based on relevance.</p>
+
+  <div class="newsletter-cta">
+    <p>Want more visual explanations like this? <a class="ml-onclick-form" href="javascript:void(0)" onclick="ml('show', 'Kponfi', true)">Subscribe to our newsletter</a></p>
+  </div>
+</section>
+
+<!-- MailerLite Universal -->
+<script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '1634287');
+</script>
+<!-- End MailerLite Universal -->
+

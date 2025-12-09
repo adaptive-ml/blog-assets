@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attention - Video Recording</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .canvas-container {
+        position: relative;
+        background: #000;
+      }
+
+      canvas.game-canvas {
+        display: block;
+        width: 960px;
+        height: 540px;
+        outline: none;
+        border: 2px solid #444;
+      }
+
+      body.recording-mode canvas.game-canvas {
+        border: none;
+      }
+
+      .info {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: #888;
+        text-align: center;
+      }
+
+      .info kbd {
+        background: #333;
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+    </style>
+    <script type="module" crossorigin src="../assets/video-BYv2m3ng.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/plugin-DQL4gMZR.js">
+  </head>
+
+  <body>
+    <div class="canvas-container">
+      <world canvas="#canvas-1" sky="#000000">
+        <entity name="controller" step-controller></entity>
+        <entity name="camera-target" transform="pos: 0 0 0"></entity>
+        <orbit-camera
+          name="camera"
+          target="camera-target"
+          current-distance="15"
+          target-distance="15"
+          current-yaw="0"
+          target-yaw="0"
+          current-pitch="0"
+          target-pitch="0"
+          min-pitch="-1.57"
+          offset-x="0"
+          offset-y="0"
+          offset-z="0"
+          main-camera="projection: orthographic; ortho-size: 10"
+        ></orbit-camera>
+        <entity ambient-light="intensity: 1.5"></entity>
+        <entity directional-light="intensity: 1.0; direction: 0 -0.5 1"></entity>
+
+        <entity name="tokens" transform="pos: 0 0 0" token-driver="separation-t: 0; gap: 1.5; font-size: 0.5"></entity>
+
+        <entity name="vector-graph" transform="pos: 0 15 0" axis-graph></entity>
+
+        <entity name="vector-a" transform="pos: 13.5 0 0" bracket-vector="value1: 1; value2: 2; value3: 3; grow-t: 0"></entity>
+        <entity name="vector-b" transform="pos: 16.5 0 0" bracket-vector="value1: 4; value2: 5; value3: 6; grow-t: 0"></entity>
+        <entity name="result-vector" transform="pos: 19.5 0 0" bracket-vector="value1: 4; value2: 10; value3: 18; grow-t: 0"></entity>
+        <entity name="dot-product" transform="pos: 13.5 0 0" dot-product="transition-t: 0; row-height: 0.6"></entity>
+      </world>
+      <canvas id="canvas-1" class="game-canvas"></canvas>
+    </div>
+
+    <div class="info">
+      Press <kbd>R</kbd> to record the next step transition. Use arrow keys or the overlay to navigate steps.
+    </div>
+
+  </body>
+</html>
