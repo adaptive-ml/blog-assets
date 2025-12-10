@@ -1,6 +1,13 @@
 # Blog Assets
 
-Static hosting for blog visualizations. Deployed to GitHub Pages for stable URLs.
+**⚠️ PRODUCTION ASSETS — DO NOT MODIFY WITHOUT APPROVAL**
+
+Static hosting for blog visualizations. Deployed to GitHub Pages for stable URLs. These assets are embedded in live Webflow blog posts.
+
+**Rules:**
+- Do not modify, rename, or delete existing files
+- Asset filenames contain content hashes — changing them breaks live embeds
+- Safe: Adding new content, regenerating `inline.html` for same build
 
 ## Structure
 
