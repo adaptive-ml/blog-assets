@@ -132,10 +132,10 @@
 
 <h2>Comparison to GRPO</h2>
 <p>
-  Everything so far is identical to GRPO (Group Relative Policy Optimization). The difference is how we assign credit to individual tokens.
+  Everything so far is identical to GRPO (Group Relative Policy Optimization). Both methods assign the same advantage to all tokens in a sequence. The difference is in how they handle clipping.
 </p>
 <p>
-  GRPO weights tokens differently, estimating each token's contribution to the reward. GSPO, on the other hand, weights tokens equally, emphasizing the full sequence over individual tokens. This improves training stability and typically yields better results.
+  Clipping limits how much a sample can influence training when it deviates from the current policy. GRPO clips at the token level, while GSPO clips at the sequence level. This sequence-level approach improves training stability and typically yields better results.
 </p>
 
 <div class="visualization-container">
