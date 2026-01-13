@@ -1,0 +1,28 @@
+<scene>
+    <a id="camera"
+        transform
+        camera="clear-color: 0xffffff"
+        orbit
+        fxaa
+    />
+
+    <a ambient-light />
+    <a directional-light />
+
+    <a id="controller" step-controller />
+
+    <a id="cube"
+        transform="pos: 0 0 0"
+        mesh="shape: 0; size: 1.5 1.5 1.5; color: 0x4C78A8"
+    />
+
+    <a id="step-0-1" sequence>
+        <a tween="target: @camera.orbit.target-distance; to: 6; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @cube.transform.pos-y; to: 1.5; duration: 0.5; easing: ease-out-expo" />
+    </a>
+
+    <a id="step-1-0" sequence>
+        <a tween="target: @camera.orbit.target-distance; to: 12; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @cube.transform.pos-y; to: 0; duration: 0.5; easing: ease-out-expo" />
+    </a>
+</scene>

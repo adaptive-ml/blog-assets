@@ -1,0 +1,17 @@
+<scene>
+    <a id="camera"
+        transform="pos: 0 0 15"
+        camera="clear-color: 0xffffff"
+        fxaa
+    />
+
+    <a ambient-light />
+    <a directional-light />
+
+    <a transform mesh="shape: 0; size: 0.8 0.8 0.8; color: 0x5C8AB8" helix-animation="index: 0" />
+    <a transform mesh="shape: 1; size: 0.8 0.8 0.8; color: 0xE86B6B" helix-animation="index: 1" />
+    <a transform mesh="shape: 0; size: 0.8 0.8 0.8; color: 0x64B45B" helix-animation="index: 2" />
+    <a transform mesh="shape: 1; size: 0.8 0.8 0.8; color: 0xF0CC48" helix-animation="index: 3" />
+    <a transform mesh="shape: 0; size: 0.8 0.8 0.8; color: 0xC08BB2" helix-animation="index: 4" />
+    <a transform mesh="shape: 1; size: 0.8 0.8 0.8; color: 0xF5A555" helix-animation="index: 5" />
+</scene>

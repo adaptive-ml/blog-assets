@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Demo</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .demo-wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .controls {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .controls button {
+        padding: 0.5rem 1rem;
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        background: #4C78A8;
+        color: #fff;
+        box-shadow:
+          0 1px 2px rgba(76, 120, 168, 0.2),
+          0 0 0 1px rgba(76, 120, 168, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition:
+          transform 0.15s cubic-bezier(0.2, 0, 0, 1),
+          box-shadow 0.15s cubic-bezier(0.2, 0, 0, 1),
+          background 0.15s ease;
+      }
+
+      .controls button:hover {
+        background: #3d6691;
+        box-shadow:
+          0 3px 8px rgba(76, 120, 168, 0.25),
+          0 0 0 1px rgba(76, 120, 168, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .controls button:active {
+        background: #355a7d;
+        transform: translateY(0);
+        box-shadow:
+          0 1px 2px rgba(76, 120, 168, 0.15),
+          0 0 0 1px rgba(76, 120, 168, 0.2),
+          inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+    <script type="module" crossorigin src="../assets/demos-grid-C1E5ZPWU.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="../assets/component-B847rBOH.js">
+    <link rel="modulepreload" crossorigin href="../assets/grid-arrangement-BGIwXJua.js">
+    <link rel="modulepreload" crossorigin href="../assets/index-C6Sj2kLI.js">
+  </head>
+  <body>
+    <div class="demo-wrapper">
+      <canvas id="canvas"></canvas>
+      <div class="controls">
+        <button id="btn-collapse">Collapse</button>
+        <button id="btn-expand">Expand</button>
+      </div>
+    </div>
+  </body>
+</html>

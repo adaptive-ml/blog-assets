@@ -1,0 +1,23 @@
+<scene>
+    <a id="camera"
+        transform="pos: 0 0 15"
+        camera="clear-color: 0xffffff; projection: orthographic; ortho-size: 20"
+        orbit="current-distance: 15; target-distance: 15; current-yaw: 0.6; target-yaw: 0.6; current-pitch: 0.5; target-pitch: 0.5; min-pitch: -1.57; offset-y: 0; zoom-sensitivity: 0"
+        fxaa
+    />
+
+    <a ambient-light />
+    <a directional-light />
+
+    <a id="grid-controller" grid-controller="mode: 1" />
+
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0xC86862" grid-item="index: 0" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0xCA9430" grid-item="index: 1" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0xBEA648" grid-item="index: 2" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0x52966A" grid-item="index: 3" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0x48A6B8" grid-item="index: 4" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0x5E88C6" grid-item="index: 5" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0x8E60B8" grid-item="index: 6" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0xB88078" grid-item="index: 7" />
+    <a transform mesh="shape: 0; size: 1 1 1; color: 0x6CA57C" grid-item="index: 8" />
+</scene>
