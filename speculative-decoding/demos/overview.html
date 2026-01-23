@@ -3,34 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Grid Demo</title>
+    <title>Overview Demo</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+      @font-face {
+        font-family: 'ABC Diatype';
+        src: url('../assets/ABCDiatype-Regular-Bght_g9x.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
 
       html, body {
         margin: 0;
         padding: 0;
-        width: 100%;
-        height: 100%;
         overflow: hidden;
         background: #fff;
         font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       }
 
       .demo-wrapper {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
         padding: 1rem;
-        box-sizing: border-box;
+      }
+
+      .demo-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .demo-label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #2a4a6d;
+        background: rgba(42, 74, 109, 0.08);
+        padding: 0.25rem 0.625rem;
+        border-radius: 3px;
+      }
+
+      .canvas-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
       }
 
       canvas {
         display: block;
-        flex: 1;
         width: 100%;
-        min-height: 0;
-        border-radius: 4px;
+        height: 100%;
       }
 
       .step-navigator {
@@ -111,16 +136,20 @@
         line-height: 1.4;
       }
     </style>
-    <script type="module" crossorigin src="../assets/demos/grid-CxwlKN9G.js"></script>
+    <script type="module" crossorigin src="../assets/demos/overview-CiAJ3CbL.js"></script>
     <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
-    <link rel="modulepreload" crossorigin href="../assets/step-plugin-Cqgj3jUS.js">
-    <link rel="modulepreload" crossorigin href="../assets/mp4-muxer-DaZBAdSD.js">
-    <link rel="modulepreload" crossorigin href="../assets/canvas-recording-Dq1yLb-1.js">
-    <link rel="modulepreload" crossorigin href="../assets/canvas-setup-C6Sj2kLI.js">
+    <link rel="modulepreload" crossorigin href="../assets/canvas-setup-F5JALq5m.js">
+    <link rel="modulepreload" crossorigin href="../assets/index-Kb45e7jD.js">
+    <link rel="stylesheet" crossorigin href="../assets/colors-CJQja38C.css">
   </head>
   <body>
     <div class="demo-wrapper">
-      <canvas id="canvas"></canvas>
+      <div class="demo-header">
+        <span class="demo-label">Overview</span>
+      </div>
+      <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+      </div>
       <div class="step-navigator">
         <div class="step-controls">
           <button class="step-btn btn-prev" disabled>←</button>
@@ -128,10 +157,17 @@
         </div>
         <div class="step-info">
           <div class="step-counter">Step 1 of 2</div>
-          <div class="step-title">Grid Layout</div>
-          <div class="step-description">Nine cubes in a 3x3 grid.</div>
+          <div class="step-title">Input Tokens</div>
+          <div class="step-description">The sentence is tokenized into individual words.</div>
         </div>
       </div>
-    </div>
+    </div>
+    <script>
+      // Report iframe content height to parent for dynamic sizing
+      const wrapper = document.querySelector('.demo-wrapper');
+      const report = () => window.parent.postMessage({ type: 'iframe-resize', height: wrapper.offsetHeight }, '*');
+      new ResizeObserver(report).observe(wrapper);
+      report();
+    </script>
   </body>
 </html>

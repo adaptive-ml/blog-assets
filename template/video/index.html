@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shallot - Video Recording</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #111;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .canvas-container {
+        position: relative;
+        background: #fff;
+      }
+
+      canvas {
+        display: block;
+        width: 960px;
+        height: 540px;
+        outline: none;
+      }
+
+      .info {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: #888;
+        text-align: center;
+      }
+
+      .info kbd {
+        background: #333;
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+    </style>
+    <script type="module" crossorigin src="../assets/video-BHNnH8-T.js"></script>
+    <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="../assets/step-plugin-Cqgj3jUS.js">
+    <link rel="modulepreload" crossorigin href="../assets/mp4-muxer-DaZBAdSD.js">
+    <link rel="modulepreload" crossorigin href="../assets/ui-vQ9UuVEs.js">
+  </head>
+
+  <body>
+    <div class="canvas-container">
+      <canvas id="canvas-1"></canvas>
+    </div>
+
+    <div class="info">
+      Press <kbd>R</kbd> to record. Adjust duration and resolution in the panel.
+    </div>
+
+  </body>
+</html>

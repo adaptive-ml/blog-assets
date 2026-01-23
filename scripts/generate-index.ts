@@ -1,11 +1,30 @@
 #!/usr/bin/env bun
 
-import { readdir } from 'fs/promises';
+import { readdir, stat } from 'node:fs/promises';
 
-const demos = await readdir('demos', { withFileTypes: true });
-const demoNames = demos.filter((d) => d.isDirectory()).map((d) => d.name);
+const EXCLUDED = new Set(['.git', '.github', 'scripts', 'node_modules']);
 
-const html = `<!DOCTYPE html>
+async function getPosts(): Promise<string[]> {
+  const entries = await readdir('.');
+  const posts: string[] = [];
+
+  for (const entry of entries) {
+    if (EXCLUDED.has(entry) || entry.startsWith('.')) continue;
+    const stats = await stat(entry);
+    if (stats.isDirectory()) {
+      posts.push(entry);
+    }
+  }
+
+  return posts.sort();
+}
+
+async function generateIndex(): Promise<void> {
+  const posts = await getPosts();
+
+  const listItems = posts.map((post) => `    <li><a href="${post}/">${post}</a></li>`).join('\n');
+
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -29,11 +48,14 @@ const html = `<!DOCTYPE html>
 <body>
   <h1>Blog Assets</h1>
   <ul>
-${demoNames.map((name) => `    <li><a href="${name}/">${name}</a></li>`).join('\n')}
+${listItems}
   </ul>
 </body>
 </html>
 `;
 
-await Bun.write('demos/index.html', html);
-console.log('Generated demos/index.html');
+  await Bun.write('index.html', html);
+  console.log(`Generated index.html with ${posts.length} posts: ${posts.join(', ')}`);
+}
+
+await generateIndex();

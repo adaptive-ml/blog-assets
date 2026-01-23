@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Steps Demo</title>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 
       html, body {
         margin: 0;
@@ -21,6 +21,8 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        padding: 1rem;
+        box-sizing: border-box;
       }
 
       canvas {
@@ -28,90 +30,108 @@
         flex: 1;
         width: 100%;
         min-height: 0;
+        border-radius: 4px;
       }
 
       .step-navigator {
         display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+      }
+
+      .step-controls {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        align-self: center;
+      }
+
+      .step-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        font-size: 18px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        background: #333;
+        color: #fff;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.75rem;
-        padding: 0.875rem 1rem;
-        background: linear-gradient(to bottom, #fafafa, #f5f5f5);
-        border-top: 1px solid rgba(0, 0, 0, 0.06);
-      }
-
-      .step-navigator button {
-        position: relative;
-        padding: 0.5rem 1rem;
-        font-family: inherit;
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        background: #4C78A8;
-        color: #fff;
-        box-shadow:
-          0 1px 2px rgba(76, 120, 168, 0.2),
-          0 0 0 1px rgba(76, 120, 168, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
         transition:
-          transform 0.15s cubic-bezier(0.2, 0, 0, 1),
-          box-shadow 0.15s cubic-bezier(0.2, 0, 0, 1),
-          background 0.15s ease;
+          background 0.2s,
+          transform 0.1s;
       }
 
-      .step-navigator button:hover {
-        background: #3d6691;
-        box-shadow:
-          0 3px 8px rgba(76, 120, 168, 0.25),
-          0 0 0 1px rgba(76, 120, 168, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
+      .step-btn:hover:not(:disabled) {
+        background: #555;
+        transform: scale(1.05);
       }
 
-      .step-navigator button:active {
-        background: #355a7d;
-        transform: translateY(0);
-        box-shadow:
-          0 1px 2px rgba(76, 120, 168, 0.15),
-          0 0 0 1px rgba(76, 120, 168, 0.2),
-          inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      .step-btn:active:not(:disabled) {
+        background: #222;
+        transform: scale(0.95);
       }
 
-      .step-navigator button:disabled {
-        background: #e0e0e0;
+      .step-btn:disabled {
+        background: #ddd;
         color: #999;
         cursor: not-allowed;
-        box-shadow: none;
-        transform: none;
+      }
+
+      .step-info {
+        flex: 1;
+        min-width: 0;
       }
 
       .step-counter {
         font-size: 0.75rem;
-        font-weight: 500;
-        color: #666;
-        min-width: 5.5rem;
-        text-align: center;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.5px;
+        color: #999;
+        margin-bottom: 0.25rem;
+      }
+
+      .step-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+      }
+
+      .step-description {
+        font-size: 0.875rem;
+        color: #666;
+        line-height: 1.4;
       }
     </style>
-    <script type="module" crossorigin src="../assets/demos-steps-QL_kva4S.js"></script>
+    <script type="module" crossorigin src="../assets/demos/steps-BVGKSI7l.js"></script>
     <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
-    <link rel="modulepreload" crossorigin href="../assets/component-B847rBOH.js">
-    <link rel="modulepreload" crossorigin href="../assets/step-plugin-DzEhy8ku.js">
-    <link rel="modulepreload" crossorigin href="../assets/index-C6Sj2kLI.js">
+    <link rel="modulepreload" crossorigin href="../assets/step-plugin-Cqgj3jUS.js">
+    <link rel="modulepreload" crossorigin href="../assets/mp4-muxer-DaZBAdSD.js">
+    <link rel="modulepreload" crossorigin href="../assets/canvas-recording-Dq1yLb-1.js">
+    <link rel="modulepreload" crossorigin href="../assets/canvas-setup-C6Sj2kLI.js">
   </head>
   <body>
     <div class="demo-wrapper">
       <canvas id="canvas"></canvas>
       <div class="step-navigator">
-        <button class="btn-prev" disabled>&larr; Prev</button>
-        <span class="step-counter">Step 1 of 2</span>
-        <button class="btn-next">Next &rarr;</button>
+        <div class="step-controls">
+          <button class="step-btn btn-prev" disabled>←</button>
+          <button class="step-btn btn-next">→</button>
+        </div>
+        <div class="step-info">
+          <div class="step-counter">Step 1 of 2</div>
+          <div class="step-title">Initial State</div>
+          <div class="step-description">The cube starts at rest.</div>
+        </div>
       </div>
-    </div>
+    </div>
   </body>
 </html>

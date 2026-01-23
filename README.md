@@ -12,44 +12,42 @@ Static hosting for blog visualizations. Deployed to GitHub Pages for stable URLs
 ## Structure
 
 ```
-demos/
-├── gspo/           # GSPO explainer visualization
-│   ├── embed.html  # HTML fragment for Webflow embedding
-│   ├── index.html  # Standalone preview (full page)
-│   └── assets/     # JS, CSS, fonts
-└── <future>/       # Additional demos
+blog-assets/
+├── attention/              # Attention explainer
+├── speculative-decoding/   # Speculative decoding explainer
+├── <post-name>/            # Future posts
+│   ├── embed.html          # HTML fragment for Webflow embedding
+│   ├── index.html          # Standalone preview (full page)
+│   ├── inline.html         # embed.html with absolute URLs
+│   ├── assets/             # JS, CSS, fonts
+│   ├── demos/              # Iframe demos (optional)
+│   └── scenes/             # Shallot scene files (optional)
+└── scripts/                # Build utilities
 ```
 
 ## Usage
 
-### Local Development
+### Adding a Post
+
+From blog-components:
 
 ```bash
-bun install
-bun dev
-```
-
-### Adding a Demo
-
-Copy built demo files from blog-components:
-
-```bash
-cp -r ~/blog-components/demos/<name>/dist demos/<name>
+cd content/<post-name> && bun run build
+cp -r dist/* ../blog-assets/<post-name>/
+cd ../blog-assets && bun run inline <post-name>
 ```
 
 ### Generate Inline Embed for Webflow
 
-After copying a demo, generate the inline embed with absolute URLs:
-
 ```bash
-bun run inline gspo
+bun run inline <post-name>
 ```
 
-This creates `demos/gspo/inline.html` with absolute URLs ready to paste into Webflow.
+This creates `<post-name>/inline.html` with absolute URLs ready to paste into Webflow.
 
 ### URLs
 
-- **Standalone preview**: https://adaptive-ml.github.io/blog-assets/demos/gspo/
-- **Inline embed**: https://adaptive-ml.github.io/blog-assets/demos/gspo/inline.html
+- **Standalone preview**: https://adaptive-ml.github.io/blog-assets/<post-name>/
+- **Inline embed**: https://adaptive-ml.github.io/blog-assets/<post-name>/inline.html
 
 Copy the contents of `inline.html` into a Webflow HTML Embed element.

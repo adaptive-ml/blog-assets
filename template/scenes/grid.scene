@@ -1,23 +1,37 @@
 <scene>
     <a id="camera"
-        transform="pos: 0 0 15"
-        camera="clear-color: 0xffffff; projection: orthographic; ortho-size: 20"
-        orbit="current-distance: 15; target-distance: 15; current-yaw: 0.6; target-yaw: 0.6; current-pitch: 0.5; target-pitch: 0.5; min-pitch: -1.57; offset-y: 0; zoom-sensitivity: 0"
+        transform
+        camera="clear-color: 0xffffff"
+        orbit="target-distance: 12"
         fxaa
     />
 
     <a ambient-light />
     <a directional-light />
 
-    <a id="grid-controller" grid-controller="mode: 1" />
+    <a id="controller" step-controller />
 
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0xC86862" grid-item="index: 0" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0xCA9430" grid-item="index: 1" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0xBEA648" grid-item="index: 2" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0x52966A" grid-item="index: 3" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0x48A6B8" grid-item="index: 4" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0x5E88C6" grid-item="index: 5" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0x8E60B8" grid-item="index: 6" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0xB88078" grid-item="index: 7" />
-    <a transform mesh="shape: 0; size: 1 1 1; color: 0x6CA57C" grid-item="index: 8" />
+    <a id="cube-0" transform="pos: -2 0 -2" mesh="shape: 0; size: 1 1 1; color: 0xC86862" />
+    <a id="cube-1" transform="pos: 0 0 -2" mesh="shape: 0; size: 1 1 1; color: 0xCA9430" />
+    <a id="cube-2" transform="pos: 2 0 -2" mesh="shape: 0; size: 1 1 1; color: 0xBEA648" />
+    <a id="cube-3" transform="pos: -2 0 0" mesh="shape: 0; size: 1 1 1; color: 0x52966A" />
+    <a id="cube-4" transform="pos: 0 0 0" mesh="shape: 0; size: 1 1 1; color: 0x48A6B8" />
+    <a id="cube-5" transform="pos: 2 0 0" mesh="shape: 0; size: 1 1 1; color: 0x5E88C6" />
+    <a id="cube-6" transform="pos: -2 0 2" mesh="shape: 0; size: 1 1 1; color: 0x8E60B8" />
+    <a id="cube-7" transform="pos: 0 0 2" mesh="shape: 0; size: 1 1 1; color: 0xB88078" />
+    <a id="cube-8" transform="pos: 2 0 2" mesh="shape: 0; size: 1 1 1; color: 0x6CA57C" />
+
+    <a id="step-0-1" sequence>
+        <a tween="target: @cube-0.transform.pos-y; to: 2; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-2.transform.pos-y; to: 2; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-6.transform.pos-y; to: 2; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-8.transform.pos-y; to: 2; duration: 0.4; easing: ease-out-expo" />
+    </a>
+
+    <a id="step-1-0" sequence>
+        <a tween="target: @cube-0.transform.pos-y; to: 0; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-2.transform.pos-y; to: 0; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-6.transform.pos-y; to: 0; duration: 0.4; easing: ease-out-expo" />
+        <a tween="target: @cube-8.transform.pos-y; to: 0; duration: 0.4; easing: ease-out-expo" />
+    </a>
 </scene>

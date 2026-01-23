@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speculative Decoding, Visualized</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+    <script type="module" crossorigin src="../assets/modulepreload-polyfill-B5Qt9EMX.js"></script>
+    <script type="module" crossorigin src="../assets/main-CMIPtg_P.js"></script>
+    <link rel="stylesheet" crossorigin href="../assets/main-CNwqprpz.css">
+    <link rel="stylesheet" crossorigin href="../assets/blog-O0a7t-ez.css">
+    <link rel="stylesheet" crossorigin href="../assets/colors-CJQja38C.css">
+  </head>
+
+  <body>
+    <div class="blog-container">
+      <div class="blog-content">
+<h1>Speculative Decoding, Visualized</h1>
+
+<p>Large language models generate text one token at a time. Each token requires a full forward pass through billions of parameters. Speculative decoding makes this faster by using a small <span class="term-draft-model">draft model</span> to propose tokens, then verifying them all at once with the large <span class="term-target-model">target model</span>.</p>
+
+<div class="demo-wrapper">
+  <iframe src="../demos/overview.html" class="demo-frame"></iframe>
+</div>
+
+<h2>Why Generation Is Slow</h2>
+
+<p>You can't predict token 5 without first knowing token 4. The process is inherently sequential. A 70-billion parameter model that takes 50ms per token needs 5 full seconds to generate 100 tokens, waiting for each step to complete before starting the next.</p>
+
+<p>But here's the asymmetry that makes speculative decoding possible: <em>verifying</em> N tokens takes one forward pass, while <em>generating</em> N tokens takes N forward passes. A language model can score an entire sequence in parallel, computing the probability distribution at every position simultaneously. If we could guess the next several tokens correctly, we could verify all of them in a single pass rather than generating them one by one.</p>
+
+<h2>How It Works</h2>
+
+<p>The algorithm follows a draft-then-verify loop:</p>
+
+<ol>
+  <li>Generate K draft tokens using the <span class="term-draft-model">draft model</span></li>
+  <li>Verify all K tokens in one <span class="term-target-model">target model</span> forward pass</li>
+  <li><span class="term-accept">Accept</span> tokens until a mismatch, then <span class="term-residual">resample</span> and discard the rest</li>
+</ol>
+
+<p>In the best case, all K tokens are accepted, plus a <span style="color: #c084fc">bonus</span> token sampled by the target model. That's K+1 tokens from a single pass. Even when some are rejected, you're guaranteed at least one token of progress.</p>
+
+<p>The <span class="term-draft-model">draft model</span> proposes several tokens. The <span class="term-target-model">target model</span> scores them all in one forward pass, then we check each position in order. When a token is <span class="term-reject">rejected</span>, we <span class="term-residual">resample</span> a replacement and discard the remaining drafts.</p>
+
+<div class="demo-wrapper">
+  <iframe src="../demos/step-by-step.html" class="demo-frame"></iframe>
+</div>
+
+<a
+  class="newsletter-cta ml-onclick-form"
+  href="javascript:void(0)"
+  onclick="ml('show', 'Kponfi', true)"
+>
+  Want more visual explanations like this? <span>Subscribe to our newsletter</span>
+</a>
+
+<h2>Preserving the Distribution</h2>
+
+<p>Speculative decoding produces samples from the exact <span class="term-target-model">target</span> distribution, not an approximation. This requires careful handling of both acceptance and rejection.</p>
+
+<div class="demo-wrapper">
+  <iframe src="../demos/distribution.html" class="demo-frame"></iframe>
+</div>
+
+<p>The animation above shows how this works. We compare <span class="term-target-model">target</span> and <span class="term-draft-model">draft</span> probabilities at each token. The <span class="term-accept">green region</span>—the minimum of the two—represents guaranteed acceptance. The <span class="term-reject">red excess</span> above it is where the draft overestimated.</p>
+
+<p>When we sample a token from the draft, what's the probability we accept it? It's simply the <span class="term-accept">green</span> height divided by the total <span class="term-draft-model">draft</span> height:</p>
+
+<div class="formula-block" data-formula="p_{\text{accept}} = \frac{\min({\color{#b8864a}p_d}, {\color{#2a4a6d}p_t})}{{\color{#b8864a}p_d}} = \min\left(1, \frac{{\color{#2a4a6d}p_t}}{{\color{#b8864a}p_d}}\right)"></div>
+
+<p>If the <span class="term-target-model">target</span> is higher than the <span class="term-draft-model">draft</span>, there's no red—we always accept. If the draft overestimated, we accept proportionally less.</p>
+
+<p>When rejected, we can't simply resample from <span class="term-target-model">p<sub>target</sub></span>—that would double-count tokens the draft already had a chance to propose. Instead, we sample from the <span class="term-residual">residual distribution</span>: the <span class="term-target-model">target</span> minus the <span class="term-accept">guaranteed acceptance</span>, normalized to form a valid distribution.</p>
+
+<div class="formula-block" data-formula="{\color{#7c5295}p_{\text{residual}}(x)} = \frac{{\color{#2a4a6d}p_t(x)} - \min({\color{#2a4a6d}p_t(x)}, {\color{#b8864a}p_d(x)})}{Z} = \frac{\max\left(0, {\color{#2a4a6d}p_t(x)} - {\color{#b8864a}p_d(x)}\right)}{Z}"></div>
+
+<p><span class="term-accept">Accepted samples</span> plus <span class="term-residual">residual resamples</span> combine to give exactly the <span class="term-target-model">target</span> distribution. Same output, faster sampling.</p>
+
+<details class="advanced">
+  <summary>Why does this preserve the target distribution?</summary>
+  <p>Consider sampling a single token. The <span class="term-draft-model">draft</span> proposes token x with probability <span class="term-draft-model">p<sub>draft</sub>(x)</span>. What's the probability that x ends up in our final output?</p>
+  <p>Two paths lead to outputting x:</p>
+  <ul>
+    <li><strong>Path 1:</strong> Draft proposes x and we accept it</li>
+    <li><strong>Path 2:</strong> Draft proposes some other token y, we reject it, and resample x from the residual</li>
+  </ul>
+  <p>For Path 1: P(propose x) × P(accept x) = <span class="term-draft-model">p<sub>draft</sub>(x)</span> × min(1, <span class="term-target-model">p<sub>target</sub>(x)</span>/<span class="term-draft-model">p<sub>draft</sub>(x)</span>)</p>
+  <p>When <span class="term-target-model">p<sub>target</sub></span> ≥ <span class="term-draft-model">p<sub>draft</sub></span>, this equals <span class="term-draft-model">p<sub>draft</sub>(x)</span>. The remaining probability mass (<span class="term-target-model">p<sub>target</sub>(x)</span> - <span class="term-draft-model">p<sub>draft</sub>(x)</span>) comes from Path 2, which is what the residual distribution provides.</p>
+  <p>When <span class="term-target-model">p<sub>target</sub></span> &lt; <span class="term-draft-model">p<sub>draft</sub></span>, Path 1 contributes <span class="term-target-model">p<sub>target</sub>(x)</span> directly. The residual is zero for x, so Path 2 contributes nothing. Total: <span class="term-target-model">p<sub>target</sub>(x)</span>.</p>
+  <p>In both cases, the final probability of outputting x equals <span class="term-target-model">p<sub>target</sub>(x)</span>.</p>
+</details>
+
+<h2>When Does It Help?</h2>
+
+<p>Speedup depends on acceptance rate and the cost ratio between models. The technique works best when:</p>
+
+<ul>
+  <li>The <span class="term-draft-model">draft</span> aligns well with the <span class="term-target-model">target</span> (distilled versions, same-family smaller models)</li>
+  <li>The size ratio is large (70B/7B gains more than 7B/1B)</li>
+  <li>Generation is predictable (code, structured output, common phrases)</li>
+</ul>
+
+<p>Expect 2-3× speedup with a well-matched draft model. Worst case is worse than standard generation: you pay for both models but get just one token.</p>
+
+<div class="demo-wrapper">
+  <iframe src="../demos/speedup.html" class="demo-frame"></iframe>
+</div>
+
+<details class="advanced">
+  <summary>Calculating the speedup</summary>
+  <p>Suppose:</p>
+  <ul>
+    <li>Target model: 50ms per forward pass</li>
+    <li>Draft model: 5ms per forward pass</li>
+    <li>Draft length K = 5 tokens</li>
+    <li>Average acceptance: 3 tokens</li>
+  </ul>
+  <p>Cost per iteration: 50ms (target) + 5×5ms (drafts) = 75ms</p>
+  <p>Tokens generated: 3 accepted + 1 resampled = 4 tokens</p>
+  <p>Effective rate: 75ms / 4 = 18.75ms per token</p>
+  <p>Compared to 50ms baseline: <strong>2.67× speedup</strong></p>
+  <p>The optimal K depends on acceptance rate. Too few drafts wastes verification parallelism. Too many wastes effort on tokens that will be rejected.</p>
+</details>
+
+<h2>Summary</h2>
+
+<p>Generating tokens is slow. Verifying them is fast. A small <span class="term-draft-model">draft model</span> guesses, a large <span class="term-target-model">target model</span> checks in parallel. 2-3× speedup, identical output.</p>
+
+<a
+  class="newsletter-cta ml-onclick-form"
+  href="javascript:void(0)"
+  onclick="ml('show', 'Kponfi', true)"
+>
+  Want more visual explanations like this? <span>Subscribe to our newsletter</span>
+</a>
+</div>
+
+<!-- MailerLite Universal -->
+<script>
+  (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+  .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+  n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+  (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+  ml('account', '1634287');
+</script>
+<!-- End MailerLite Universal -->
+
+    </div>
+
+  </body>
+</html>
