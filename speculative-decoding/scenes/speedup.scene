@@ -4,7 +4,7 @@
     <a id="camera"
         transform
         camera="clear-color: 0xfafafa; mode: 1; size: 3.5"
-        orbit="target: @orbit-target; target-distance: 8; yaw: 0.3; pitch: 1; target-yaw: 0.3; target-pitch: 1; min-pitch: 0; zoom-speed: 0"
+        orbit="target: @orbit-target; target-distance: 8; yaw: 0.3; pitch: 1; target-yaw: 0.3; target-pitch: 1; min-pitch: 0; zoom-speed: 0; target-size: 3.5"
         fxaa
     />
 

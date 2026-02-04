@@ -4,7 +4,7 @@
     <a id="camera"
         transform
         camera="clear-color: 0xffffff; mode: 1; size: 9"
-        orbit="button: 0; target: @orbit-target; target-distance: 15; yaw: 0.4; pitch: 0.8; target-yaw: 0.4; target-pitch: 0.8; min-pitch: 0; zoom-speed: 0"
+        orbit="button: 0; target: @orbit-target; target-distance: 15; yaw: 0.4; pitch: 0.8; target-yaw: 0.4; target-pitch: 0.8; min-pitch: 0; zoom-speed: 0; target-size: 9"
         fxaa
     />
 
@@ -57,8 +57,8 @@
 
                 <!-- Gradient legend for acceptance probability -->
                 <a id="acceptance-legend" transform="pos: 6 3.5 0" gradient-legend="width: 0.4; height: 5; transition: 0">
-                    <a id="legend-label-top" transform="pos: 0 2.8 0; scale: 0 0 0" text="font-size: 0.4; color: 0x22c55e; anchor-x: 0.5; anchor-y: 0.5; content: Accept" />
-                    <a id="legend-label-bottom" transform="pos: 0 -2.8 0; scale: 0 0 0" text="font-size: 0.4; color: 0xef4444; anchor-x: 0.5; anchor-y: 0.5; content: Reject" />
+                    <a id="legend-label-top" transform="pos: 0 2.95 0; scale: 0 0 0" text="font-size: 0.4; color: 0x22c55e; anchor-x: 0.5; anchor-y: 0.5; content: Accept" />
+                    <a id="legend-label-bottom" transform="pos: 0 -2.95 0; scale: 0 0 0" text="font-size: 0.4; color: 0xef4444; anchor-x: 0.5; anchor-y: 0.5; content: Reject" />
                     <a id="legend-tick-top" transform="pos: -0.35 2.5 0; scale: 0 0 0" text="font-size: 0.35; color: 0x22c55e; anchor-x: 1; anchor-y: 0.5; content: 1" />
                     <a id="legend-tick-bottom" transform="pos: -0.35 -2.5 0; scale: 0 0 0" text="font-size: 0.35; color: 0xef4444; anchor-x: 1; anchor-y: 0.5; content: 0" />
                 </a>
@@ -143,7 +143,7 @@
         <a tween="target: @orbit-target.transform.pos-y; to: 8.75; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.35; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-yaw; to: 0.25; duration: 0.8; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 4.5; duration: 0.8; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 4.5; duration: 0.8; easing: ease-out-expo" />
         <a pause="duration: 0.1" />
         <a tween="target: @graph-viewport.transform.scale-x; to: 1; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @graph-viewport.transform.scale-y; to: 1; duration: 0.5; easing: ease-out-expo" />
@@ -159,7 +159,7 @@
         <a tween="target: @orbit-target.transform.pos-y; to: 1.5; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.8; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-yaw; to: 0.4; duration: 0.6; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 9; duration: 0.6; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 9; duration: 0.6; easing: ease-out-expo" />
     </a>
 
     <!-- Step 2 -> 3: Transition to draft distribution -->
@@ -870,7 +870,7 @@
         <a tween="target: @orbit-target.transform.pos-y; to: 1.5; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: 0; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.8; duration: 0.8; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 9; duration: 0.8; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 9; duration: 0.8; easing: ease-out-expo" />
         <!-- Hide checkmarks -->
         <a tween="target: @mark-0.transform.scale-x; to: 0; duration: 0.4; easing: ease-out-expo" />
         <a tween="target: @mark-0.transform.scale-y; to: 0; duration: 0.4; easing: ease-out-expo" />
@@ -944,7 +944,7 @@
         <a tween="target: @orbit-target.transform.pos-y; to: 8.75; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: 3; duration: 0.8; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.55; duration: 0.8; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 4.5; duration: 0.8; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 4.5; duration: 0.8; easing: ease-out-expo" />
         <!-- Restore latent colors: 0,1,4 green (0x22c55e), 2,3 yellow (0xfbbf24) -->
         <a tween="target: @out-latent-0.mesh.color-r; to: 0.13; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @out-latent-0.mesh.color-g; to: 0.77; duration: 0.6; easing: ease-out-expo" />

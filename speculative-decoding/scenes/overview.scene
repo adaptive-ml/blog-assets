@@ -4,7 +4,7 @@
     <a id="camera"
         transform
         camera="clear-color: 0xffffff; mode: 1; size: 4.5"
-        orbit="button: 0; target: @orbit-target; target-distance: 15; target-yaw: 0; target-pitch: 1.5; min-pitch: 0; zoom-speed: 0"
+        orbit="button: 0; target: @orbit-target; target-distance: 15; target-yaw: 0; target-pitch: 1.5; min-pitch: 0; zoom-speed: 0; target-size: 4.5"
         fxaa
     />
 
@@ -135,7 +135,7 @@
         <a tween="target: @token-3.border.transition; to: 1; duration: 0.5; easing: ease-out-expo" />
         <a pause="duration: 0.15" />
         <a tween="target: @orbit-target.transform.pos-z; to: 0; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 7; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 7; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.8; duration: 0" />
         <a tween="target: @camera.orbit.target-yaw; to: 0.4; duration: 0" />
         <a tween="target: @token-0.transform.pos-z; to: -8.5; duration: 0.5; easing: ease-out-expo" />
@@ -147,7 +147,7 @@
     <!-- Step 1 -> 0: Zoom back, hide input tokens -->
     <a id="step-1-0" sequence step-transition="from: 1; to: 0">
         <a tween="target: @orbit-target.transform.pos-z; to: -10.5; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 1.5; duration: 0" />
         <a tween="target: @camera.orbit.target-yaw; to: 0; duration: 0" />
         <a tween="target: @token-0.transform.pos-z; to: -13.5; duration: 0.5; easing: ease-out-expo" />
@@ -166,7 +166,7 @@
         <a tween="target: @output-0.border.transition; to: 1; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-x; to: 4; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -4; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
     </a>
 
     <!-- Step 2 -> 1: Hide first output -->
@@ -175,7 +175,7 @@
         <a tween="target: @output-0.border.transition; to: 0; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-x; to: 0; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: 0; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 7; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 7; duration: 0.5; easing: ease-out-expo" />
     </a>
 
     <!-- Step 2 -> 3: Show remaining 5 outputs one by one, sliding camera with each -->
@@ -229,7 +229,7 @@
     <a id="step-3-4" sequence step-transition="from: 3; to: 4">
         <a tween="target: @orbit-target.transform.pos-x; to: 0; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -3; duration: 0.6; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 7; duration: 0.6; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 7; duration: 0.6; easing: ease-out-expo" />
         <a pause="duration: 0.1" />
         <a tween="target: @draft-model.transform.scale-x; to: 1; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @draft-model.transform.scale-y; to: 1; duration: 0.5; easing: ease-out-expo" />
@@ -245,7 +245,7 @@
         <a tween="target: @draft-model.transform.pos-z; to: 17; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-x; to: 14; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -4; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 4.5; duration: 0.5; easing: ease-out-expo" />
     </a>
 
     <!-- Step 4 -> 5: Draft model rapidly generates outputs, then tilt to view -->
@@ -253,7 +253,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 7; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 3; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -2; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 8; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 8; duration: 0.5; easing: ease-out-expo" />
         <a pause="duration: 0.1" />
         <a tween="target: @draft-out-slot-0.slot.transition; to: 1; duration: 0.2; easing: ease-out-back" />
         <a tween="target: @draft-output-0.border.transition; to: 1; duration: 0.2; easing: ease-out-expo" />
@@ -278,7 +278,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 13; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 0; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -5; duration: 0.6; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 5; duration: 0.6; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 5; duration: 0.6; easing: ease-out-expo" />
     </a>
 
     <!-- Step 5 -> 4: Hide draft outputs, return camera to draft model view -->
@@ -288,7 +288,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 0; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 0; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -3; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 7; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 7; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @draft-out-slot-5.slot.transition; to: 0; duration: 0.3; easing: ease-out-expo" />
         <a tween="target: @draft-output-5.border.transition; to: 0; duration: 0.3; easing: ease-out-expo" />
         <a tween="target: @draft-out-slot-4.slot.transition; to: 0; duration: 0.3; easing: ease-out-expo" />
@@ -315,7 +315,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 6; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 1.5; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -2; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 9; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 9; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.9; duration: 0.5; easing: ease-out-expo" />
         <a pause="duration: 0.2" />
         <a tween="target: @validation-model.transform.scale-x; to: 1; duration: 0.5; easing: ease-out-expo" />
@@ -423,7 +423,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 13; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 0; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -5; duration: 0.5; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 5; duration: 0.5; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 5; duration: 0.5; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 1.1; duration: 0.5; easing: ease-out-expo" />
     </a>
 
@@ -470,7 +470,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 5; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 3; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -2; duration: 0.6; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 7; duration: 0.6; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 7; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 1.5; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-yaw; to: 0; duration: 0.6; easing: ease-out-expo" />
     </a>
@@ -518,7 +518,7 @@
         <a tween="target: @orbit-target.transform.pos-x; to: 6; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-y; to: 1.5; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @orbit-target.transform.pos-z; to: -2; duration: 0.6; easing: ease-out-expo" />
-        <a tween="target: @camera.camera.size; to: 9; duration: 0.6; easing: ease-out-expo" />
+        <a tween="target: @camera.orbit.target-size; to: 9; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-pitch; to: 0.9; duration: 0.6; easing: ease-out-expo" />
         <a tween="target: @camera.orbit.target-yaw; to: 0.2; duration: 0.6; easing: ease-out-expo" />
     </a>
