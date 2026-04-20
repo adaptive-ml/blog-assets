@@ -1,0 +1,49 @@
+<script type="module" crossorigin src="https://adaptive-ml.github.io/blog-assets/grpo/assets/main-BQu7uye8.js"></script>
+<link rel="stylesheet" crossorigin href="https://adaptive-ml.github.io/blog-assets/grpo/assets/main-D8A4JV8R.css">
+<div class="blog-content">
+  <h1>GRPO, Simply Explained</h1>
+
+  <p>
+    GRPO (Group Relative Policy Optimization) is a <a href="https://dev.adaptive-ml.com/training/post-training/rl">reinforcement learning</a> algorithm for training language models. For each prompt, it produces a group of outputs, scores them, and nudges the model toward the best.
+  </p>
+
+  <div class="figure-mount" data-figure="generate"></div>
+
+  <h2>Background</h2>
+
+  <p>
+    <a href="https://dev.adaptive-ml.com/training/post-training/sft">Supervised fine-tuning</a> teaches a model from examples: given this prompt, produce this output. Reinforcement learning teaches from <a class="term-reward" href="https://dev.adaptive-ml.com/rewards">rewards</a>.
+  </p>
+
+  <p>
+    The model being trained is called the <span class="term-policy">policy model</span>. It attempts a task, earns a <span class="term-reward">reward</span>, and learns to earn higher <span class="term-reward">rewards</span>.
+  </p>
+
+  <p>
+    A <span class="term-reward">reward</span> tells the model what "good" means. It can come from an <a href="https://dev.adaptive-ml.com/rewards/rlaif">AI judge</a>, a <a href="https://dev.adaptive-ml.com/rewards/reward-models">model trained on human feedback</a>, or <a href="https://dev.adaptive-ml.com/rewards/rlvr">direct verification</a>.
+  </p>
+
+  <h2>What GRPO does</h2>
+
+  <p>
+    Instead of one output per prompt, GRPO produces a group of <span class="term-rollout">rollouts</span>. Each <span class="term-rollout">rollout</span> is one complete generation from the <span class="term-policy">policy model</span>.
+  </p>
+
+  <p>
+    Each <span class="term-rollout">rollout</span> gets a <span class="term-reward">reward</span>. The scores are ranked against the group's average.
+  </p>
+
+  <div class="figure-mount" data-figure="rank"></div>
+
+  <p>
+    The <span class="term-policy">policy model</span> is updated: above-average <span class="term-rollout">rollouts</span> are encouraged, below-average ones suppressed. That's the algorithm.
+  </p>
+
+  <p>
+    The <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath paper</a> introduces GRPO with the full gradient math. <a href="https://www.adaptive-ml.com/post/a-simple-explanation-of-gspo">GSPO</a> is a close variant with better training stability.
+  </p>
+
+  <a class="newsletter-cta" href="https://dev.adaptive-ml.com/">
+    Want to learn more about RL? <span>Explore the RL Glossary</span>
+  </a>
+</div>
