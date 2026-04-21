@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GRPO, Simply Explained</title>
-    <script type="module" crossorigin src="../assets/main-BQu7uye8.js"></script>
-    <link rel="stylesheet" crossorigin href="../assets/main-D8A4JV8R.css">
+    <script type="module" crossorigin src="../assets/main-BieyFElP.js"></script>
+    <link rel="stylesheet" crossorigin href="../assets/main-BnrSgYcY.css">
     <link rel="stylesheet" crossorigin href="../assets/blog-DcEcBg67.css">
   </head>
   <body>
@@ -14,7 +14,7 @@
   <h1>GRPO, Simply Explained</h1>
 
   <p>
-    GRPO (Group Relative Policy Optimization) is a <a href="https://dev.adaptive-ml.com/training/post-training/rl">reinforcement learning</a> algorithm for training language models. For each prompt, it produces a group of outputs, scores them, and nudges the model toward the best.
+    GRPO (Group Relative Policy Optimization) is a <a href="https://dev.adaptive-ml.com/training/post-training/rl">reinforcement learning</a> algorithm for training language models. Most recent RL-on-LLM methods, such as <a href="https://dev.adaptive-ml.com/optimization/gspo">GSPO</a> and <a href="https://dev.adaptive-ml.com/optimization/dapo">DAPO</a>, are variations on it. Same core loop: generate a group of outputs for a prompt, score them, nudge the model toward what beat average.
   </p>
 
   <div class="figure-mount" data-figure="generate"></div>
@@ -46,11 +46,28 @@
   <div class="figure-mount" data-figure="rank"></div>
 
   <p>
-    The <span class="term-policy">policy model</span> is updated: above-average <span class="term-rollout">rollouts</span> are encouraged, below-average ones suppressed. That's the algorithm.
+    Each <span class="term-rollout">rollout</span>'s standardized score is its <span class="term-advantage">advantage</span>. It's applied to each of the <span class="term-rollout">rollout</span>'s tokens.
+  </p>
+
+  <div class="figure-mount" data-figure="apply"></div>
+
+  <p>
+    Positive <span class="term-advantage">advantage</span> makes those tokens more likely. Negative makes them less.
   </p>
 
   <p>
-    The <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath paper</a> introduces GRPO with the full gradient math. <a href="https://www.adaptive-ml.com/post/a-simple-explanation-of-gspo">GSPO</a> is a close variant with better training stability.
+    In the training loss, each token's log-probability is weighted by its <span class="term-rollout">rollout</span>'s <span class="term-advantage">advantage</span>.
+  </p>
+
+  <details class="advanced">
+    <summary>Calculating loss</summary>
+    <p>
+      For each token in <span class="term-rollout">rollout</span> <code>i</code>, the loss includes <code>A<sub>i</sub> × log π(token | context)</code>. Optimizing it pushes the token's probability up when <code>A</code> is positive, down when negative.
+    </p>
+  </details>
+
+  <p>
+    That's GRPO. The <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath paper</a> introduces it with the full gradient math. GSPO aggregates the signal at the sequence level instead of the token level, stabilizing training for mixture-of-experts models.
   </p>
 
   <a class="newsletter-cta" href="https://dev.adaptive-ml.com/">
