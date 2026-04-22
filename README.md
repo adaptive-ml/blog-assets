@@ -2,7 +2,7 @@
 
 **⚠️ PRODUCTION ASSETS — DO NOT MODIFY WITHOUT APPROVAL**
 
-Static hosting for blog visualizations. Deployed to GitHub Pages for stable URLs. These assets are embedded in live Webflow blog posts.
+Static hosting for blog post visualizations. Deployed to GitHub Pages for stable URLs. These assets are embedded in live Webflow blog posts.
 
 **Rules:**
 - Do not modify, rename, or delete existing files
