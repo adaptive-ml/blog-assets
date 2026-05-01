@@ -27,6 +27,7 @@ async function generateInlineEmbed(postName: string): Promise<void> {
   // Fix asset paths (from webflow/ subdirectory to root)
   fragment = fragment.replace(/\.\.\/assets\//g, `${BASE_URL}/${postName}/assets/`);
   fragment = fragment.replace(/\.\.\/demos\//g, `${BASE_URL}/${postName}/demos/`);
+  fragment = fragment.replace(/\.\.\/images\//g, `${BASE_URL}/${postName}/images/`);
 
   await Bun.write(outPath, fragment);
   console.log(`Generated ${outPath}`);

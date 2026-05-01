@@ -1,0 +1,158 @@
+<script type="module" crossorigin src="https://adaptive-ml.github.io/blog-assets/rl-visualized/assets/components-DhiWkIOc.js"></script>
+<link rel="stylesheet" crossorigin href="https://adaptive-ml.github.io/blog-assets/rl-visualized/assets/components-CYGwLzI4.css">
+<div class="blog-content">
+  <h1>Reinforcement Learning, Visualized</h1>
+
+  <p>
+    <a href="https://dev.adaptive-ml.com/training/post-training/rl">Reinforcement learning</a> trains a model from rewards. A model generates a few outputs for a prompt, a <a href="https://dev.adaptive-ml.com/rewards">reward</a> is assigned to each one, and the model is updated toward the better ones.
+  </p>
+
+  <p>Let's walk through how it works step-by-step with an example.</p>
+
+  <div class="demo-wrapper">
+    <iframe
+      src="https://dev.adaptive-ml.com/embed/rl-painters?theme=light"
+      class="demo-frame"
+      title="RL Painters interactive walkthrough"
+    ></iframe>
+  </div>
+
+  <p style="text-align: center;">
+    <a href="https://dev.adaptive-ml.com/training/post-training/rl" target="_blank" rel="noopener">Open in a new tab →</a>
+  </p>
+
+  <h2>The task</h2>
+
+  <p>
+    The model is a base <a href="https://dev.adaptive-ml.com/training/llm">LLM</a>. It's tasked with naming paint colors:
+  </p>
+
+  <blockquote>Name this paint color: #d48475</blockquote>
+
+  <p>
+    There's no single right answer. Two people can disagree about whether "Sunset Dust" beats "Sandy Beige" and both be right. We'll use RL to train the model toward different tastes.
+  </p>
+
+  <h2>Rollout</h2>
+
+  <p>
+    The model generates one output for the prompt. That single output is called a <strong>rollout</strong>.
+  </p>
+
+  <p>For <code>#d48475</code>, the base model says <strong>Sandy Beige</strong>.</p>
+
+  <p><img alt="Base model produces a single rollout: Sandy Beige." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/01-rollout-light.png" /></p>
+
+  <h2>Reward</h2>
+
+  <p>
+    To train, we need a signal: <em>this output was good</em> or <em>this one wasn't</em>. That signal is the <strong>reward</strong>.
+  </p>
+
+  <p>A reward is anything that takes a model output and produces a number. Where the number comes from is open:</p>
+
+  <ul>
+    <li>A human ranking outputs (the basis for <a href="https://dev.adaptive-ml.com/rewards/rlhf">RLHF</a>).</li>
+    <li>A unit test that passes or fails, or any other rule-based check (<a href="https://dev.adaptive-ml.com/rewards/rlvr">RLVR</a>).</li>
+    <li>Another model entirely (<a href="https://dev.adaptive-ml.com/rewards/rlaif">RLAIF</a>).</li>
+  </ul>
+
+  <p>
+    For our judges, we'll use another LLM as the scorer. This pattern is called <a href="https://dev.adaptive-ml.com/evaluation/llm-as-judge"><strong>LLM-as-a-judge</strong></a>.
+  </p>
+
+  <p>
+    The <strong>Poet</strong> judge asks: does the name evoke something? "Sunset Dust" scores higher than "Sandy Beige."
+  </p>
+
+  <p>Poet alone has a problem. Reward "Banana" for a red and the model drifts. A second judge guards against that:</p>
+
+  <ul>
+    <li><strong>Correctness.</strong> Does the name actually describe <code>#d48475</code>?</li>
+  </ul>
+
+  <p><img alt="A correctness judge, lit up next to the base and Poet models." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/02-judge-light.png" /></p>
+
+  <p>The two scores combine into one reward per rollout.</p>
+
+  <h2>Sampling a group</h2>
+
+  <p>
+    One rollout on its own isn't enough to learn from. Generating several samples for the same prompt gives a <strong>group</strong> of rollouts.
+  </p>
+
+  <p><img alt="Four rollouts for the same prompt: Sandy Beige, Salmon Dust, Terracotta, Muted Coral." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/03-group-light.png" /></p>
+
+  <p>The variation across the group is what RL works with.</p>
+
+  <h2>Scoring</h2>
+
+  <p>Each rollout goes through the judges. Each comes back with a number.</p>
+
+  <p><img alt="Each rollout scored against the group average of 0.53." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/04-rewards-light.png" /></p>
+
+  <p>The group average is the bar. Above is good, below is bad, both relative to this prompt.</p>
+
+  <h2>GRPO</h2>
+
+  <p>Push the model toward above-average rollouts, away from below-average ones.</p>
+
+  <p><img alt="Above-average rollouts highlighted; below-average dimmed. This is GRPO." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/05-grpo-light.png" /></p>
+
+  <p>
+    This is <a href="https://dev.adaptive-ml.com/optimization/grpo"><strong>GRPO</strong></a> (Group Relative Policy Optimization). Each rollout's reward gets compared to the group's average. Recent variants like <a href="https://dev.adaptive-ml.com/optimization/gspo">GSPO</a> and <a href="https://dev.adaptive-ml.com/optimization/dapo">DAPO</a> are refinements on the same core loop.
+  </p>
+
+  <h2>The Poet</h2>
+
+  <p><img alt="Base says Sandy Beige; the trained Poet says Sunset Dust." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/06-poet-light.png" /></p>
+
+  <p>
+    The base model still says "Sandy Beige." The trained copy says "Sunset Dust." Nobody wrote a "be more poetic" rule. The Poet rewarded poetic outputs; the model followed.
+  </p>
+
+  <h2>Three painters</h2>
+
+  <p>The same recipe with two more judges:</p>
+
+  <ul>
+    <li><strong>Architect</strong> rewards terse, material-led names. Pulls toward "Burnt Sienna."</li>
+    <li><strong>Unhinged</strong> rewards vivid, off-register names. Pulls toward "Cinnamon Toast."</li>
+  </ul>
+
+  <p>Same base model. Three different judges. Three trained painters.</p>
+
+  <p><img alt="Sandy Beige, Sunset Dust, Burnt Sienna, Cinnamon Toast: four names from the same base model." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/07-painters-light.png" /></p>
+
+  <h2>Reward hacking</h2>
+
+  <p>
+    The Unhinged painter collapses onto a handful of names. Most reds become "Mulled Wine." Most warm tones become "Cinnamon Toast."
+  </p>
+
+  <p><img alt="Try any hex; watch the trained painters collapse to a small vocabulary." src="https://adaptive-ml.github.io/blog-assets/rl-visualized/images/08-explorer-light.png" /></p>
+
+  <p>
+    This is <a href="https://dev.adaptive-ml.com/rewards/reward-hacking"><strong>reward hacking</strong></a>. "Mulled Wine" scores high with the Unhinged judge for most reds, so the model just says it for anything red-ish. The judge can't tell the difference; the model takes the shortcut. (<a href="https://en.wikipedia.org/wiki/Goodhart%27s_law">Goodhart's law</a>: when a measure becomes a target, it stops being a good measure.)
+  </p>
+
+  <p>Potential fixes:</p>
+
+  <ul>
+    <li><a href="https://dev.adaptive-ml.com/data/synthetic-data">Synthetic data</a> for broader prompt coverage.</li>
+    <li><a href="https://dev.adaptive-ml.com/rewards/rlvr">Verifiable rewards</a> when an answer can be checked exactly. Common in math and code.</li>
+    <li><a href="https://dev.adaptive-ml.com/optimization/rejection-sampling">Rejection sampling</a> to filter the worst outputs before they reach the loss.</li>
+  </ul>
+
+  <h2>Closing thoughts</h2>
+
+  <p>A reward and a loop. That's RL.</p>
+
+  <p>
+    Three judges produced three painters. Anything you can score becomes a training signal: math, code, conversation. Same loop, different reward.
+  </p>
+
+  <a class="newsletter-cta" href="https://dev.adaptive-ml.com/">
+    Want to learn more about RL? <span>Explore the RL Glossary</span>
+  </a>
+</div>
