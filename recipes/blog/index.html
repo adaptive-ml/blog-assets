@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introducing Recipes</title>
+    <style>
+      body { margin: 0; background: #fff; }
+      .webflow-sim { max-width: 680px; margin: 40px auto; padding: 0 16px; }
+      .webflow-sim .w-richtext figure { max-width: 60%; }
+      .webflow-sim .w-richtext figure div { font-size: 0; }
+    </style>
+    <script type="module" crossorigin src="../assets/components-DiKoeweF.js"></script>
+    <link rel="stylesheet" crossorigin href="../assets/components-DiNq47Za.css">
+    <link rel="stylesheet" crossorigin href="../assets/blog-B6FunSvy.css">
+  </head>
+  <body>
+    <div class="webflow-sim">
+      <div class="w-richtext">
+        <div class="w-embed w-script">
+          <div class="blog-content">
+  <h1>Introducing Recipes</h1>
+
+  <p>A recipe is a Python file that defines an AI workflow on Harmony, Adaptive Engine's compute backend.</p>
+
+  <p>Most RL setups stitch a trainer, inference engine, grader, and launcher together. A recipe is one file for all of them.</p>
+
+  <p>Three pieces:</p>
+
+  <ul>
+    <li><a href="https://docs.adaptive-ml.com/v0.14/harmony/config"><strong><code>InputConfig</code></strong></a>: declares the recipe's inputs</li>
+    <li><a href="https://docs.adaptive-ml.com/v0.14/harmony/recipe-syntax"><strong><code>@recipe_main</code></strong></a>: marks the entrypoint function</li>
+    <li><a href="https://docs.adaptive-ml.com/v0.14/harmony/recipe-syntax"><strong><code>RecipeContext</code></strong></a>: handles Harmony calls</li>
+  </ul>
+
+  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#A000F8">class</span><span style="color:#28282A"> MyConfig</span><span style="color:#747474">(</span><span style="color:#28282A">InputConfig</span><span style="color:#747474">):</span></span>
+<span class="line"><span style="color:#28282A">    ...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#A000F8">@recipe_main</span></span>
+<span class="line"><span style="color:#A000F8">async</span><span style="color:#A000F8"> def</span><span style="color:#28282A"> main</span><span style="color:#747474">(</span><span style="color:#28282A">config</span><span style="color:#747474">:</span><span style="color:#28282A"> MyConfig</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">:</span><span style="color:#28282A"> RecipeContext</span><span style="color:#747474">):</span></span>
+<span class="line"><span style="color:#28282A">    ...</span></span></code></pre>
+
+  <p>
+    <a href="https://docs.adaptive-ml.com/v0.14/core/recipes">Built-in recipes</a> (<a href="https://dev.adaptive-ml.com/training/post-training/sft">SFT</a>, <a href="https://dev.adaptive-ml.com/optimization/grpo">GRPO</a>, <a href="https://dev.adaptive-ml.com/optimization/ppo">PPO</a>, <a href="https://dev.adaptive-ml.com/evaluation">eval</a>, <a href="https://dev.adaptive-ml.com/optimization/rejection-sampling">rejection sampling</a>) ship with Adaptive Engine. Custom recipes use the same primitives.
+  </p>
+
+  <h2>InputConfig</h2>
+
+  <p>
+    The recipe's inputs, declared as a Pydantic model.
+  </p>
+
+  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#A000F8">class</span><span style="color:#28282A"> SummarizationGRPO</span><span style="color:#747474">(</span><span style="color:#28282A">InputConfig</span><span style="color:#747474">):</span></span>
+<span class="line"><span style="color:#28282A">    model</span><span style="color:#747474">:</span><span style="color:#28282A"> Annotated</span><span style="color:#747474">[</span><span style="color:#28282A">Model</span><span style="color:#747474">[</span><span style="color:#28282A">Trainable</span><span style="color:#747474">],</span><span style="color:#28282A"> Field</span><span style="color:#747474">(</span><span style="color:#28282A">description</span><span style="color:#A000F8">=</span><span style="color:#00858D">"Policy"</span><span style="color:#747474">)]</span></span>
+<span class="line"><span style="color:#28282A">    dataset</span><span style="color:#747474">:</span><span style="color:#28282A"> Annotated</span><span style="color:#747474">[</span><span style="color:#28282A">Dataset</span><span style="color:#747474">[</span><span style="color:#28282A">Prompt</span><span style="color:#747474">],</span><span style="color:#28282A"> Field</span><span style="color:#747474">(</span><span style="color:#28282A">description</span><span style="color:#A000F8">=</span><span style="color:#00858D">"Prompts"</span><span style="color:#747474">)]</span></span>
+<span class="line"><span style="color:#28282A">    grader</span><span style="color:#747474">:</span><span style="color:#28282A"> Annotated</span><span style="color:#747474">[</span><span style="color:#28282A">Grader</span><span style="color:#747474">,</span><span style="color:#28282A"> Field</span><span style="color:#747474">(</span><span style="color:#28282A">description</span><span style="color:#A000F8">=</span><span style="color:#00858D">"Reward"</span><span style="color:#747474">)]</span></span>
+<span class="line"><span style="color:#28282A">    learning_rate</span><span style="color:#747474">:</span><span style="color:#28282A"> Annotated</span><span style="color:#747474">[</span><span style="color:#28282A">float</span><span style="color:#747474">,</span><span style="color:#28282A"> Field</span><span style="color:#747474">(</span><span style="color:#28282A">default</span><span style="color:#A000F8">=7.5e-7</span><span style="color:#747474">)]</span><span style="color:#A000F8"> =</span><span style="color:#A000F8"> 7.5e-7</span></span></code></pre>
+
+  <p>
+    <code>Model</code>, <code>Dataset</code>, and <code>Grader</code> are engine-aware: they reference models, datasets, and graders registered on Adaptive Engine.
+  </p>
+
+  <h2>@recipe_main</h2>
+
+  <p>
+    Marks the recipe's async entrypoint.
+  </p>
+
+  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#A000F8">@recipe_main</span></span>
+<span class="line"><span style="color:#A000F8">async</span><span style="color:#A000F8"> def</span><span style="color:#28282A"> main</span><span style="color:#747474">(</span><span style="color:#28282A">config</span><span style="color:#747474">:</span><span style="color:#28282A"> SummarizationGRPO</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">:</span><span style="color:#28282A"> RecipeContext</span><span style="color:#747474">):</span></span>
+<span class="line"><span style="color:#28282A">    ...</span></span></code></pre>
+
+  <p>
+    Harmony parses input arguments, instantiates the typed config, and calls the function.
+  </p>
+
+  <h2>RecipeContext</h2>
+
+  <p>The recipe's connection to Harmony.</p>
+
+  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#28282A">model </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">model</span><span style="color:#747474">.</span><span style="color:#28282A">spawn_train</span><span style="color:#747474">(</span><span style="color:#00858D">"policy"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">)</span></span>
+<span class="line"><span style="color:#28282A">grader </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">grader</span><span style="color:#747474">.</span><span style="color:#28282A">load</span><span style="color:#747474">(</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#28282A">completions </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">generate</span><span style="color:#747474">(</span><span style="color:#28282A">prompts</span><span style="color:#747474">)</span></span>
+<span class="line"><span style="color:#28282A">scores </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> grader</span><span style="color:#747474">.</span><span style="color:#28282A">score</span><span style="color:#747474">(</span><span style="color:#28282A">completions</span><span style="color:#747474">)</span></span>
+<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">train_grpo</span><span style="color:#747474">(</span><span style="color:#28282A">prompts</span><span style="color:#747474">,</span><span style="color:#28282A"> completions</span><span style="color:#747474">,</span><span style="color:#28282A"> scores</span><span style="color:#747474">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">save</span><span style="color:#747474">(</span><span style="color:#28282A">model_name</span><span style="color:#A000F8">=</span><span style="color:#00858D">"summarizer-v1"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#A000F8">=</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span></code></pre>
+
+  <p>
+    <code>ctx</code> flows into every Harmony call. Training and inference share the same workers, so a recipe can roll out from a model and immediately train on its outputs.
+  </p>
+
+  <p>
+    That's a recipe. Built-in or custom, all run on Harmony. See the <a href="https://docs.adaptive-ml.com/v0.14/harmony/overview">docs</a> for more.
+  </p>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
