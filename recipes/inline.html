@@ -5,9 +5,9 @@
 
   <p>A recipe is a Python file that defines an AI workflow on Harmony, Adaptive Engine's compute backend.</p>
 
-  <p><a href="https://dev.adaptive-ml.com/training/post-training/rl">RL training</a> has two compute-heavy halves: training <a href="https://dev.adaptive-ml.com/optimization">updates the policy</a>, <a href="https://dev.adaptive-ml.com/inference">inference</a> generates rollouts. They run on separate workers with different memory profiles. A <a href="https://dev.adaptive-ml.com/rewards">grader</a> scores each rollout. A launcher orchestrates the loop. Weights flow from training to inference after each update. Rollouts flow back. The hard part of running an RL pipeline is this coordination layer.</p>
+  <p><a href="https://dev.adaptive-ml.com/training/post-training/rl">Reinforcement learning</a> has many moving parts: <a href="https://dev.adaptive-ml.com/optimization">training</a>, <a href="https://dev.adaptive-ml.com/inference">inference</a>, <a href="https://dev.adaptive-ml.com/rewards">graders</a>. They typically run in separate systems. Most of the work in an RL pipeline is the coordination between them.</p>
 
-  <p>In Harmony, all of this lives in one file. Training and inference run on the same workers, so weights stay in memory. Graders are passed in as inputs. Harmony schedules the loop across workers.</p>
+  <p>In Harmony, all of this lives in one file.</p>
 
   <p>A recipe has three pieces:</p>
 
