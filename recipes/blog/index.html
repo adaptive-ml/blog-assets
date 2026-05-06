@@ -25,7 +25,7 @@
 
   <p><a href="https://dev.adaptive-ml.com/training/post-training/rl">Reinforcement learning</a> has many moving parts: <a href="https://dev.adaptive-ml.com/optimization">training</a>, <a href="https://dev.adaptive-ml.com/inference">inference</a>, <a href="https://dev.adaptive-ml.com/rewards">graders</a>. They typically run in separate systems. Most of the work in an RL pipeline is the coordination between them.</p>
 
-  <p>In Harmony, all of this lives in one file.</p>
+  <p>In Harmony, all of this can live in one file.</p>
 
   <p>A recipe has three pieces:</p>
 
@@ -43,7 +43,7 @@
 <span class="line"><span style="color:#28282A">    ...</span></span></code></pre>
 
   <p>
-    <a href="https://docs.adaptive-ml.com/v0.14/core/recipes">Built-in recipes</a> (<a href="https://dev.adaptive-ml.com/training/post-training/sft">SFT</a>, <a href="https://dev.adaptive-ml.com/optimization/grpo">GRPO</a>, <a href="https://dev.adaptive-ml.com/optimization/ppo">PPO</a>, <a href="https://dev.adaptive-ml.com/evaluation">eval</a>, <a href="https://dev.adaptive-ml.com/optimization/rejection-sampling">rejection sampling</a>) ship with Adaptive Engine. Custom recipes use the same primitives.
+    <a href="https://docs.adaptive-ml.com/v0.14/core/recipes">Built-in recipes</a> ship with Adaptive Engine: <a href="https://dev.adaptive-ml.com/training/post-training/sft">supervised fine-tuning</a>, <a href="https://dev.adaptive-ml.com/rewards/rlaif">RL with a grader</a>, <a href="https://dev.adaptive-ml.com/rewards/rlhf">RL on preferences</a>, <a href="https://dev.adaptive-ml.com/evaluation">evaluation</a>, <a href="https://dev.adaptive-ml.com/inference/optimization/speculative-decoding">speculative decoding draft alignment</a>. Each wraps training, data loading, and monitoring into one workflow. Custom recipes use the same primitives.
   </p>
 
   <h2>InputConfig</h2>
@@ -80,17 +80,15 @@
 
   <p>The recipe's connection to Harmony.</p>
 
-  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#28282A">model </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">model</span><span style="color:#747474">.</span><span style="color:#28282A">spawn_train</span><span style="color:#747474">(</span><span style="color:#00858D">"policy"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">)</span></span>
+  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#28282A">dataset </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">dataset</span><span style="color:#747474">.</span><span style="color:#28282A">load</span><span style="color:#747474">(</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span>
 <span class="line"><span style="color:#28282A">grader </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">grader</span><span style="color:#747474">.</span><span style="color:#28282A">load</span><span style="color:#747474">(</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span>
+<span class="line"><span style="color:#28282A">model </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">model</span><span style="color:#747474">.</span><span style="color:#28282A">spawn_train</span><span style="color:#747474">(</span><span style="color:#00858D">"policy"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">,</span><span style="color:#28282A"> max_batch_size</span><span style="color:#A000F8">=10000</span><span style="color:#747474">)</span></span>
 <span class="line"></span>
-<span class="line"><span style="color:#28282A">completions </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">generate</span><span style="color:#747474">(</span><span style="color:#28282A">prompts</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">scores </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> grader</span><span style="color:#747474">.</span><span style="color:#28282A">score</span><span style="color:#747474">(</span><span style="color:#28282A">completions</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">train_grpo</span><span style="color:#747474">(</span><span style="color:#28282A">prompts</span><span style="color:#747474">,</span><span style="color:#28282A"> completions</span><span style="color:#747474">,</span><span style="color:#28282A"> scores</span><span style="color:#747474">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">save</span><span style="color:#747474">(</span><span style="color:#28282A">model_name</span><span style="color:#A000F8">=</span><span style="color:#00858D">"summarizer-v1"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#A000F8">=</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span></code></pre>
+<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> GRPO</span><span style="color:#747474">(</span><span style="color:#28282A">dataset</span><span style="color:#A000F8">=</span><span style="color:#28282A">dataset</span><span style="color:#747474">,</span><span style="color:#28282A"> model</span><span style="color:#A000F8">=</span><span style="color:#28282A">model</span><span style="color:#747474">,</span><span style="color:#28282A"> grader</span><span style="color:#A000F8">=</span><span style="color:#28282A">grader</span><span style="color:#747474">,</span><span style="color:#28282A"> epochs</span><span style="color:#A000F8">=1.0</span><span style="color:#747474">).</span><span style="color:#28282A">run</span><span style="color:#747474">()</span></span>
+<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> model</span><span style="color:#747474">.</span><span style="color:#28282A">save</span><span style="color:#747474">(</span><span style="color:#28282A">model_name</span><span style="color:#A000F8">=</span><span style="color:#00858D">"policy-v1"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#A000F8">=</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span></code></pre>
 
   <p>
-    <code>ctx</code> flows into every Harmony call. Training and inference share the same workers, so a recipe can roll out from a model and immediately train on its outputs.
+    <code>ctx</code> flows into every Harmony call. Dataset, grader, model, and trainer compose into one workflow.
   </p>
 
   <p>
