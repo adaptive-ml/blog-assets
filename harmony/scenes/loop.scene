@@ -1,0 +1,24 @@
+<scene>
+    <a ambient-light="color: 0xffffff; intensity: 0.75" />
+    <a
+        directional-light="direction: -0.1 -1 -0.4"
+        shadow="distance: 30"
+    />
+
+    <!-- white ground slab: reads as the page (white-on-white) but receives the blocks' cast shadows.
+         top face just below y=0 so the rails (drawn at y=0) sit on it without z-fighting. -->
+    <a part transform="pos: 0 -0.07 4; scale: 200 0.1 40" color="rgba: 1 1 1 1" />
+
+    <!-- near-top-down angled orthographic camera (yaw 0.12, pitch 1.2217 — 20° off straight-down).
+         fixed zoom (size 5) and a constant left pan (pan x -2.5) so the left-anchored housing + GPU
+         labels always stay framed; the demo's CameraSystem reaffirms both each frame. the transform is
+         pre-set to the matching panned pose (eye = pan + offset) so the first frame is already correct.
+         all content (lanes, housing, labels, blocks) is built in code, driven by `config`. white clear
+         color — the ground is the page. -->
+    <a
+        camera="clear-color: 0xffffff; mode: orthographic; size: 5"
+        sear
+        orbit="yaw: 0.12; pitch: 1.2217; min-pitch: 1.0472; max-pitch: 1.4835; size: 5; distance: 20; zoom-speed: 0; pan: -2.5 0 0"
+        transform="pos: -1.6811 18.7936 6.7918; rot: -0.5725 0.0491 0.0344 0.8177"
+    />
+</scene>
