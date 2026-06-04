@@ -1,44 +1,68 @@
 <script type="module" crossorigin src="https://adaptive-ml.github.io/blog-assets/harmony/assets/modulepreload-polyfill-B5Qt9EMX.js"></script>
-<script type="module" crossorigin src="https://adaptive-ml.github.io/blog-assets/harmony/assets/main-C6QoZbio.js"></script>
-<link rel="stylesheet" crossorigin href="https://adaptive-ml.github.io/blog-assets/harmony/assets/main-ldyKRgDY.css">
+<script type="module" crossorigin src="https://adaptive-ml.github.io/blog-assets/harmony/assets/main-Cj_9VE-p.js"></script>
+<link rel="stylesheet" crossorigin href="https://adaptive-ml.github.io/blog-assets/harmony/assets/main-Cgxh49Zy.css">
 <div class="blog-content">
   <h1>Harmony, unified training and inference</h1>
 
   <p>Harmony is <a href="https://www.adaptive-ml.com/post/adaptive-engine-blog" target="_blank" rel="noopener">Adaptive Engine</a>'s unified compute backend for <a href="https://dev.adaptive-ml.com/training/post-training/rl" target="_blank" rel="noopener">reinforcement learning</a>: one engine for the whole loop, no separate stacks.</p>
-
-  <h2>The RL training loop</h2>
 
   <div class="walkthrough-wrap">
     <iframe class="demo-frame loop-demo" src="https://adaptive-ml.github.io/blog-assets/harmony/demos/loop.html" title="the RL training loop" loading="lazy"></iframe>
     <div data-figure="walkthrough"></div>
   </div>
 
+  <h2>The RL training loop</h2>
+
+  <p>A single step runs three phases: <span class="c-rollout">rollout</span>, <span class="c-train">train</span>, and <span class="c-optim">optim</span>.</p>
+
+  <h3>Rollout</h3>
+
+  <div data-figure="rollout"></div>
+
+  <details>
+    <summary>Assigning a score</summary>
+    <div data-figure="group"></div>
+    <p>Several methods turn a score into a training signal. Here we illustrate <a href="https://dev.adaptive-ml.com/optimization/grpo" target="_blank" rel="noopener">GRPO</a>.</p>
+  </details>
+
+  <h3>Train</h3>
+
+  <div data-figure="train"></div>
+
+  <h3>Optim</h3>
+
+  <div data-figure="optim"></div>
+
+  <h3>Parallel training</h3>
+
+  <div data-figure="parallel"></div>
+
+  <h3>Scaling further</h3>
+
+  <p>Production runs combine more than data parallelism. Tensor and pipeline parallelism split a model too large for one GPU across many; asynchronous rollout drops the barrier between generating and training. The <a href="https://huggingface.co/spaces/nanotron/ultrascale-playbook" target="_blank" rel="noopener">Ultra-Scale Playbook</a> covers these in depth.</p>
+
   <h2>Harmony</h2>
 
-  <p><span class="c-rollout">Rollout</span> runs on an inference engine. <span class="c-train">Train</span> and <span class="c-optim">optim</span> run on a training framework. Traditionally these are separate systems, and wiring them together is most of the work.</p>
+  <p><span class="c-rollout">Rollout</span> is inference. <span class="c-train">Train</span> and <span class="c-optim">optim</span> are the opposite: gradient updates. Different jobs, historically different tools.</p>
 
-  <p>Harmony runs the whole loop as one engine. A <a href="https://www.adaptive-ml.com/post/introducing-recipes" target="_blank" rel="noopener">recipe</a> is that loop in one file:</p>
+  <div data-figure="split"></div>
 
-  <pre class="shiki adaptive-light" style="background-color:#f5f5f7;color:#28282a" tabindex="0"><code><span class="line"><span style="color:#28282A">dataset </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">dataset</span><span style="color:#747474">.</span><span style="color:#28282A">load</span><span style="color:#747474">(</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">grader </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">grader</span><span style="color:#747474">.</span><span style="color:#28282A">load</span><span style="color:#747474">(</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">policy </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> config</span><span style="color:#747474">.</span><span style="color:#28282A">model</span><span style="color:#747474">.</span><span style="color:#28282A">spawn_train</span><span style="color:#747474">(</span><span style="color:#00858D">"policy"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#747474">,</span><span style="color:#28282A"> max_batch_size</span><span style="color:#A000F8">=10000</span><span style="color:#747474">,</span><span style="color:#28282A"> tp</span><span style="color:#A000F8">=4</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">reference </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> policy</span><span style="color:#747474">.</span><span style="color:#28282A">clone_inf</span><span style="color:#747474">()</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#A000F8">for</span><span style="color:#28282A"> prompt </span><span style="color:#A000F8">in</span><span style="color:#28282A"> dataset</span><span style="color:#747474">:</span></span>
-<span class="line"><span style="color:#28282A">    samples </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> async_map</span><span style="color:#747474">(</span><span style="color:#28282A">policy</span><span style="color:#747474">.</span><span style="color:#28282A">generate_tokens</span><span style="color:#747474">,</span><span style="color:#747474"> [</span><span style="color:#28282A">prompt </span><span style="color:#A000F8">for</span><span style="color:#28282A"> _ </span><span style="color:#A000F8">in</span><span style="color:#28282A"> range</span><span style="color:#747474">(</span><span style="color:#A000F8">8</span><span style="color:#747474">)])</span></span>
-<span class="line"><span style="color:#28282A">    texts </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> async_map</span><span style="color:#747474">(</span><span style="color:#28282A">policy</span><span style="color:#747474">.</span><span style="color:#28282A">detokenize_thread</span><span style="color:#747474">,</span><span style="color:#28282A"> samples</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">    grades </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> async_map</span><span style="color:#747474">(</span><span style="color:#28282A">grader</span><span style="color:#747474">.</span><span style="color:#28282A">grade</span><span style="color:#747474">,</span><span style="color:#28282A"> texts</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">    scores </span><span style="color:#A000F8">=</span><span style="color:#28282A"> np</span><span style="color:#747474">.</span><span style="color:#28282A">array</span><span style="color:#747474">([</span><span style="color:#28282A">g</span><span style="color:#747474">.</span><span style="color:#28282A">value </span><span style="color:#A000F8">for</span><span style="color:#28282A"> g </span><span style="color:#A000F8">in</span><span style="color:#28282A"> grades</span><span style="color:#747474">])</span></span>
-<span class="line"><span style="color:#28282A">    advantages </span><span style="color:#A000F8">=</span><span style="color:#747474"> (</span><span style="color:#28282A">scores </span><span style="color:#A000F8">-</span><span style="color:#28282A"> scores</span><span style="color:#747474">.</span><span style="color:#28282A">mean</span><span style="color:#747474">())</span><span style="color:#A000F8"> /</span><span style="color:#747474"> (</span><span style="color:#28282A">scores</span><span style="color:#747474">.</span><span style="color:#28282A">std</span><span style="color:#747474">()</span><span style="color:#A000F8"> +</span><span style="color:#A000F8"> 1e-8</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#A000F8">    for</span><span style="color:#28282A"> sample</span><span style="color:#747474">,</span><span style="color:#28282A"> adv </span><span style="color:#A000F8">in</span><span style="color:#28282A"> zip</span><span style="color:#747474">(</span><span style="color:#28282A">samples</span><span style="color:#747474">,</span><span style="color:#28282A"> advantages</span><span style="color:#747474">):</span></span>
-<span class="line"><span style="color:#28282A">        lp </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> policy</span><span style="color:#747474">.</span><span style="color:#28282A">logprobs_per_token</span><span style="color:#747474">(</span><span style="color:#28282A">sample</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#28282A">        ref_lp </span><span style="color:#A000F8">=</span><span style="color:#A000F8"> await</span><span style="color:#28282A"> reference</span><span style="color:#747474">.</span><span style="color:#28282A">logprobs_per_token</span><span style="color:#747474">(</span><span style="color:#28282A">sample</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#A000F8">        await</span><span style="color:#28282A"> policy</span><span style="color:#747474">.</span><span style="color:#28282A">train_grpo</span><span style="color:#747474">(</span><span style="color:#28282A">sample</span><span style="color:#747474">,</span><span style="color:#28282A"> lp</span><span style="color:#747474">,</span><span style="color:#28282A"> ref_lp</span><span style="color:#747474">,</span><span style="color:#747474"> [</span><span style="color:#28282A">adv</span><span style="color:#747474">]</span><span style="color:#A000F8"> *</span><span style="color:#28282A"> len</span><span style="color:#747474">(</span><span style="color:#28282A">lp</span><span style="color:#747474">),</span><span style="color:#28282A"> clip_range</span><span style="color:#A000F8">=0.1</span><span style="color:#747474">,</span><span style="color:#28282A"> kl_beta</span><span style="color:#A000F8">=0.01</span><span style="color:#747474">)</span></span>
-<span class="line"><span style="color:#A000F8">    await</span><span style="color:#28282A"> policy</span><span style="color:#747474">.</span><span style="color:#28282A">optim_step</span><span style="color:#747474">(</span><span style="color:#28282A">config</span><span style="color:#747474">.</span><span style="color:#28282A">learning_rate</span><span style="color:#747474">,</span><span style="color:#28282A"> wd</span><span style="color:#A000F8">=0.0</span><span style="color:#747474">,</span><span style="color:#28282A"> max_grad_norm</span><span style="color:#A000F8">=1.0</span><span style="color:#747474">)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#A000F8">await</span><span style="color:#28282A"> policy</span><span style="color:#747474">.</span><span style="color:#28282A">save</span><span style="color:#747474">(</span><span style="color:#28282A">model_name</span><span style="color:#A000F8">=</span><span style="color:#00858D">"policy-v1"</span><span style="color:#747474">,</span><span style="color:#28282A"> ctx</span><span style="color:#A000F8">=</span><span style="color:#28282A">ctx</span><span style="color:#747474">)</span></span></code></pre>
+  <p>Running them as separate systems means two copies of the model, wired together and kept in sync as the weights change. That orchestration is most of the work.</p>
 
-  <p><code>generate_tokens</code> is the <span class="c-rollout">rollout</span>. <code>train_grpo</code> is <span class="c-train">train</span>. <code>optim_step</code> is <span class="c-optim">optim</span>. The whole <a href="https://www.adaptive-ml.com/post/grpo-simply-explained" target="_blank" rel="noopener">GRPO</a> loop, in one file.</p>
+  <p>Harmony removes the boundary.</p>
 
-  <p>See the <a href="https://www.adaptive-ml.com/post/introducing-recipes" target="_blank" rel="noopener">recipes post</a> to go deeper.</p>
+  <div data-figure="unified"></div>
+
+  <p>The same weights serve both rollout and training, which opens optimizations a split pipeline can't reach.</p>
+
+  <p>It all fits in one file. A <a href="https://www.adaptive-ml.com/post/introducing-recipes" target="_blank" rel="noopener">recipe</a> is that loop:</p>
+
+  <div data-figure="code"></div>
+
+  <p class="further-reading">Further reading</p>
+  <ul>
+    <li><a href="https://www.adaptive-ml.com/post/introducing-recipes" target="_blank" rel="noopener">Recipes</a>: the whole loop as a single file.</li>
+    <li><a href="https://www.adaptive-ml.com/post/grpo-simply-explained" target="_blank" rel="noopener">GRPO, simply explained</a>: the scoring method shown above.</li>
+    <li><a href="https://dev.adaptive-ml.com/" target="_blank" rel="noopener">RL Glossary</a>: every term here, in depth.</li>
+  </ul>
 </div>

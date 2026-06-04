@@ -20,12 +20,20 @@
                 width: 100%;
                 height: 100%;
                 display: block;
+                cursor: grab;
+            }
+            body.grabbing canvas {
+                cursor: grabbing;
             }
         </style>
-      <script type="module" crossorigin src="../assets/demos/loop-BjlClXC6.js"></script>
+      <script type="module" crossorigin src="../assets/demos/loop-h_Z4jn4t.js"></script>
       <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-B5Qt9EMX.js">
     </head>
     <body>
         <canvas></canvas>
+        <script>
+            window.addEventListener("pointerdown", () => document.body.classList.add("grabbing"));
+            window.addEventListener("pointerup", () => document.body.classList.remove("grabbing"));
+        </script>
     </body>
 </html>
